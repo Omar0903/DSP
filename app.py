@@ -3,11 +3,11 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import Tk
 from tkinter import filedialog
-import os
+from tkinter import   filedialog, messagebox
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from tkinter import   filedialog, messagebox
+
 
 def GenerateSignal():
     if cmbo1.get() == "Sin":
@@ -42,6 +42,11 @@ def GenerateSignal():
         plt.xlim(0, duration)  # Limit x-axis to the duration
         plt.ylim(-1.5, 1.5)    # Set y-axis limits
         plt.show()
+        with open("sine_wave.txt", "w") as file:
+            for index, value in enumerate(signal):
+                file.write(f"{index}: {value}\n")
+
+        print(" The data has been stored. 'sine_wave.txt'")
     else:
            # Step 1: Define parameters
         amplitude = float(En1.get())         # Amplitude of the sine wave
@@ -74,21 +79,24 @@ def GenerateSignal():
         plt.xlim(0, duration)  # Limit x-axis to the duration
         plt.ylim(-1.5, 1.5)    # Set y-axis limits
         plt.show()
+        with open("cosine_wave.txt", "w") as file:
+            for value in signal:
+                file.write(f"{value}\n")
+
+        print(" The data has been stored 'cosine.txt'")
 
 
 
-def OpenFolder():
-    folder_path = filedialog.askdirectory()
-    if folder_path:  
-        file_name = 'yourfile.txt' 
-        os.startfile(folder_path)
-        file_path = os.path.join(folder_path, file_name)
+def read_file():
+    filepath = filedialog.askopenfilename(filetypes=[("Text files", "*.txt")])
+    
+    if filepath:
         try:
-            with open(file_path, 'r', encoding='utf-8') as file:
+            with open(filepath, "r") as file:
                 content = file.read()
-                print(content) 
-        except FileNotFoundError:
-            print(f"file {file_name} does not exist ")
+                messagebox.showinfo("File Content", content)
+        except Exception as e:
+            messagebox.showerror("Error", f"Could not read file: {e}")
 # Creating the main window
 MainScreen = Tk()
 MainScreen.geometry('1200x720')
@@ -113,7 +121,7 @@ Lb8  = Label(fr2,text=' Signal Information ',fg='black',bg='white',font=25,width
 
 
 bt1  = Button(MainScreen,text='Generate',fg='black',bg='silver',width=30,height=2,command=GenerateSignal)  
-bt2  = Button(MainScreen,text='Open Folder',fg='black',bg='silver',command=OpenFolder,width=30,height=2)
+bt2  = Button(MainScreen,text='Open Folder',fg='black',bg='silver',command=read_file,width=30,height=2)
 
 En1 = Entry(fr3,fg='black',bg='white',font= 15,justify="center")
 En2 = Entry(fr3,fg='black',bg='white',font= 15,justify="center")
