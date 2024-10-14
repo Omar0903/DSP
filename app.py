@@ -9,6 +9,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from comparesignals import *
 
      
 def GenerateSignal():
@@ -16,7 +17,7 @@ def GenerateSignal():
         amplitude = float(En1.get())        
         frequency = float(En2.get())         
         PhaseShift = float(En4.get())        
-        SamplingRate = float(En3.get())     
+        SamplingRate = int(En3.get())     
         if frequency >= 100 :
               # Generate time values
             t = np.linspace(0, 1, int(SamplingRate ), endpoint=False)
@@ -35,7 +36,7 @@ def GenerateSignal():
             for widget in plot.winfo_children():
                     widget.destroy()
             # Create a new figure with a larger size
-            fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(8, 5))
+            fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(8, 6))
             # Plot the continuous wave
             ax1.plot(t, signal, label='Continuous Wave', color='b')
             ax1.set_title('Continuous Wave')
