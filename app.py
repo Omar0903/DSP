@@ -31,7 +31,7 @@ def GenerateSignal():
                 discreteSignal = amplitude * np.sin(2 * np.pi * frequency * t_discrete + PhaseShift)
             elif cmbo1.get() == 'Cos':
                 discreteSignal = amplitude * np.cos(2 * np.pi * frequency * t_discrete + PhaseShift)
-            SaveWaveData(t, signal, t_discrete, discreteSignal)
+            SaveWaveData(t, signal, t_discrete, discreteSignal,SamplingRate)
             for widget in plot.winfo_children():
                     widget.destroy()
             # Create a new figure with a larger size
@@ -89,13 +89,13 @@ def GenerateSignal():
             plt.show()
             with open("sine_wave.txt", "w") as file:
                 for index, value in enumerate(signal):
-                    file.write(f"{index}: {value}\n")
+                    file.write(f"{index} {value}\n")
 
             print(" The data has been stored. 'sine_wave.txt'")
     except ValueError:
         messagebox.showerror("Input Error", "Please enter valid numeric values for all parameters.")
         return
-def SaveWaveData(t, signal, t_discrete, discreteSignal):
+def SaveWaveData(t, signal, t_discrete, discreteSignal,SamplingRate):
     """Saves the generated wave data to a file."""
     file_path = filedialog.asksaveasfilename(defaultextension=".txt",
                                              filetypes=[("Text files", ".txt"), ("All files", ".*")],
@@ -104,13 +104,17 @@ def SaveWaveData(t, signal, t_discrete, discreteSignal):
         try:
             with open(file_path, 'w') as file:
                 # Save continuous wave data
-                file.write("Continuous Wave Data:\n")
-                file.write("Index, Amplitude\n")
-                for index, amplitude in enumerate(signal):
-                    file.write(f"{index}, {amplitude:.5f}\n")
+                file.write("0\n")
+                file.write("0\n")
+                file.write(f"{SamplingRate}\n")
 
-                file.write("\nDiscrete Wave Data:\n")
-                file.write("Index, Amplitude\n")
+
+                for index, amplitude in enumerate(signal):
+                    file.write(f"{index} {amplitude:.5f}\n")
+
+                file.write("0\n")
+                file.write("0\n")
+                file.write(f"{SamplingRate}\n")
                 for index, amplitude in enumerate(discreteSignal):
                     file.write(f"{index}, {amplitude:.5f}\n")
 
