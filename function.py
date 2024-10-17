@@ -12,7 +12,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 SignalType  = 0
 IsPeriodic = 0
 
-def new_1(file1,outputFile):
+def Normalization(file1,outputFile):
     try:
         dict1 = {}
         sums = [0, 0, 0]  
@@ -142,7 +142,7 @@ def ChooseFileForNormalization():
     output_file = filedialog.asksaveasfilename(title="Select output file", defaultextension=".txt")
 
     if file1 and output_file:
-        new_1(file1, output_file)
+        Normalization(file1, output_file)
     else:
         messagebox.showwarning("Warning", "You must select all files.")     
 def GenerateSignal(En1, En2, En3, En4, cmbo1, plot):
