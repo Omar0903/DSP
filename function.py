@@ -12,6 +12,35 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 SignalType  = 0
 IsPeriodic = 0
 
+def new_1(file1,outputFile):
+    try:
+        dict1 = {}
+        sums = [0, 0, 0]  
+        with open(file1, 'r') as f1:
+            for i in range(3):
+                line = f1.readline()
+                if line:
+                    value = float(line.strip())
+                    sums[i] += value 
+            for line in f1:
+                index, value = line.split()
+                dict1[int(index)] = float(value)
+        max_value = max(dict1.values())
+        min_value = min(dict1.values())
+        with open(outputFile, 'w') as out_file:
+            out_file.write(f" {sums[0]}\n")
+            out_file.write(f" {sums[1]}\n")
+            out_file.write(f" {sums[2]}\n")
+            all_indices = set(dict1.keys())
+            for index in sorted(all_indices):
+                value1 = dict1.get(index, 0)
+                result = (value1 - min_value)/(max_value-min_value)
+                out_file.write(f"{index} {result}\n")
+        messagebox.showinfo("Operation completed successfully", f"Results saved in {outputFile}")
+    except FileNotFoundError:
+        messagebox.showerror("Error", "One of the files is missing.")
+    except Exception as e:
+        messagebox.showerror("An error occurred", str(e))
 
 
 def AddFile(file1, file2, outputFile):
@@ -107,7 +136,15 @@ def ChooseFileForSubtraction():
     if file1 and file2 and output_file:
         SubtractFile(file1, file2, output_file)
     else:
-        messagebox.showwarning("Warning", "You must select all files.")        
+        messagebox.showwarning("Warning", "You must select all files.")     
+def ChooseFileForNormalization():
+    file1 = filedialog.askopenfilename(title="Select the first file")
+    output_file = filedialog.asksaveasfilename(title="Select output file", defaultextension=".txt")
+
+    if file1 and output_file:
+        new_1(file1, output_file)
+    else:
+        messagebox.showwarning("Warning", "You must select all files.")     
 def GenerateSignal(En1, En2, En3, En4, cmbo1, plot):
     try:
         amplitude = float(En1.get())        

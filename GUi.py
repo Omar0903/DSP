@@ -35,7 +35,7 @@ bt3  = Button(MainScreen,text='Addition',fg='black',bg='white',width=15,height=2
 bt4  = Button(MainScreen,text='Subtraction',fg='black',bg='white',width=15,height=2,command=ChooseFileForSubtraction)  
 bt5  = Button(MainScreen,text='Multiplication',fg='black',bg='white',width=15,height=2,command=GenerateSignal)  
 bt6  = Button(MainScreen,text='Squaring',fg='black',bg='white',width=15,height=2,command=GenerateSignal)  
-bt7  = Button(MainScreen,text='Normalization',fg='black',bg='white',width=15,height=2,command=GenerateSignal)  
+bt7  = Button(MainScreen,text='Normalization',fg='black',bg='white',width=15,height=2,command=ChooseFileForNormalization)  
 bt8  = Button(MainScreen,text='Accumulation ',fg='black',bg='white',width=15,height=2,command=GenerateSignal)  
 
 
