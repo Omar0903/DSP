@@ -9,7 +9,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from functions import *
+from function import *
 
 MainScreen = Tk()
 MainScreen.geometry('1280x720')
@@ -30,8 +30,8 @@ Lb9  = Label(fr1,text=' Welcome TO Signal Digital Program ',fg='black',bg='white
 Lb7  = Label(fr3,text=' Inputs ',fg='black',bg='white',font=25,width=20)
 Lb8  = Label(fr2,text=' Signal Information ',fg='black',bg='white',font=25,width=25)
 bt1  = Button(MainScreen,text='Generate',fg='black',bg='white',width=15,height=2,command=lambda: GenerateSignal(En1, En2, En3, En4, cmbo1, plot))  
-bt2  = Button(MainScreen,text='Open Folder',fg='black',bg='white',command=read_file,width=15,height=2)
-bt3  = Button(MainScreen,text='Addition',fg='black',bg='white',width=15,height=2,command=add)  
+bt2  = Button(MainScreen,text='Open Folder',fg='black',bg='white',command=ReadFile,width=15,height=2)
+bt3  = Button(MainScreen,text='Addition',fg='black',bg='white',width=15,height=2,command=ChooseFile)  
 bt4  = Button(MainScreen,text='Subtraction',fg='black',bg='white',width=15,height=2,command=GenerateSignal)  
 bt5  = Button(MainScreen,text='Multiplication',fg='black',bg='white',width=15,height=2,command=GenerateSignal)  
 bt6  = Button(MainScreen,text='Squaring',fg='black',bg='white',width=15,height=2,command=GenerateSignal)  
