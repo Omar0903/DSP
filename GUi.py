@@ -38,6 +38,8 @@ bt5  = Button(MainScreen,text='Multiplication',fg='black',bg='white',width=15,he
 bt6  = Button(MainScreen,text='Squaring',fg='black',bg='white',width=15,height=2,command=GenerateSignal)  
 bt7  = Button(MainScreen,text='Normalization',fg='black',bg='white',width=15,height=2,command=ChooseFileForNormalization)  
 bt8  = Button(MainScreen,text='Accumulation ',fg='black',bg='white',width=15,height=2,command=GenerateSignal)  
+bt9  = Button(MainScreen,text='Compare Signals ',fg='black',bg='white',width=15,height=2,command=CheckSamples)  
+
 
 
 
@@ -55,6 +57,7 @@ bt5.place(x=650,y=400)
 bt6.place(x=800,y=400)
 bt7.place(x=950,y=400)
 bt8.place(x=1100,y=400)
+bt9.place(x=50,y=470)
 
 fr1.place(x=5,y=5)
 fr2.place(x=30,y=80)

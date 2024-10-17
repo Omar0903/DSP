@@ -9,7 +9,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-SignalType  = 0
+
+
+
+
+
+
+
+
+SignalType = 0
 IsPeriodic = 0
 
 def Normalization(file1,outputFile):
@@ -312,3 +320,65 @@ def ReadFile():
                     plt.show()
         except Exception as e:
             messagebox.showerror("Error", f"Could not read file: {e}")
+def SignalSamplesAreEqual(file_name, samples):
+    expected_indices = []
+    expected_samples = []
+    
+    try:
+        with open(file_name, 'r') as f:
+            # Skip the first three lines
+            for _ in range(3):
+                f.readline()
+            
+            for line in f:
+                # Process each line
+                L = line.strip()
+                if len(L.split()) == 2:  # Check for two elements
+                    L = L.split()
+                    V1 = int(L[0])       # First element as integer
+                    V2 = float(L[1])     # Second element as float
+                    expected_indices.append(V1)
+                    expected_samples.append(V2)
+                else:
+                    break  # Exit if format is incorrect
+
+        # Check for length match
+        if len(expected_samples) != len(samples):
+            messagebox.showerror("Error", "The length of the signal does not match the expected length")
+            return
+        
+        # Check for value equality
+        for i in range(len(expected_samples)):
+            if abs(samples[i] - expected_samples[i]) < 0.01:
+                continue
+            else:
+                messagebox.showerror("Error", "The signal values do not match the expected values")
+                return
+            
+        messagebox.showinfo("Success", "Test case passed successfully")
+        
+    except FileNotFoundError:
+        messagebox.showerror("Error", "The file does not exist")
+
+def CheckSamples():
+    file1 = filedialog.askopenfilename(title="Select the first file")
+    file2 = filedialog.askopenfilename(title="Select the second file")
+
+    if file1 and file2:
+        # Read the samples from file1
+        expected_samples = []
+        with open(file1, 'r') as f:
+            for _ in range(3):
+                f.readline()
+            for line in f:
+                L = line.strip()
+                if len(L.split()) == 2:  # Check for two elements
+                    L = L.split()
+                    V1 = int(L[0])       # First element as integer
+                    V2 = float(L[1])     # Second element as float
+                    expected_samples.append(V2)
+                else:
+                    break  # Exit if format is incorrect
+        SignalSamplesAreEqual(file1, expected_samples)
+    else:
+        messagebox.showwarning("Warning", "You must select all files.")   
