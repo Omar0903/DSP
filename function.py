@@ -221,13 +221,13 @@ def GenerateSignal(En1, En2, En3, En4, cmbo1, plot):
             # Discrete Sinusoidal Signals
             signal = amplitude * np.sin(2 * np.pi * frequency * t + PhaseShift)
             plt.figure(figsize=(10, 5))
-            plt.stem(t, signal, basefmt=' ')  # Remove use_line_collection
+            plt.stem(t, signal, basefmt=' ')  
             plt.title('Discrete-Time Sinusoidal Signal')
             plt.xlabel('Time (s)')
             plt.ylabel('Amplitude')
             plt.grid(True)
-            plt.xlim(0, duration)  # Limit x-axis to the duration
-            plt.ylim(-1.5, 1.5)    # Set y-axis limits
+            plt.xlim(0, duration)  
+            plt.ylim(-1.5, 1.5)    
             plt.show()
 
             # Save the generated sine wave data to a text file
@@ -268,9 +268,9 @@ def ReadFile():
         try:
             with open(filepath, "r") as file:
                 # Read metadata
-                signal_type = int(file.readline().strip())  # 0 for time, 1 for frequency
-                is_periodic = int(file.readline().strip())  # 0 or 1 for periodicity
-                N1 = int(file.readline().strip())           # Number of samples or frequencies
+                signal_type = int(file.readline().strip())  
+                is_periodic = int(file.readline().strip())  
+                N1 = int(file.readline().strip())           
                 # Read data based on signal type
                 if signal_type == 0:
                     # Time domain data (Sample Index, Amplitude)
@@ -323,40 +323,34 @@ def ReadFile():
 def SignalSamplesAreEqual(file_name, samples):
     expected_indices = []
     expected_samples = []
-    
+
     try:
         with open(file_name, 'r') as f:
-            # Skip the first three lines
             for _ in range(3):
                 f.readline()
-            
+
             for line in f:
-                # Process each line
                 L = line.strip()
-                if len(L.split()) == 2:  # Check for two elements
+                if len(L.split()) == 2:
                     L = L.split()
-                    V1 = int(L[0])       # First element as integer
-                    V2 = float(L[1])     # Second element as float
+                    V1 = int(L[0])
+                    V2 = float(L[1])
                     expected_indices.append(V1)
                     expected_samples.append(V2)
                 else:
-                    break  # Exit if format is incorrect
+                    break
 
-        # Check for length match
         if len(expected_samples) != len(samples):
             messagebox.showerror("Error", "The length of the signal does not match the expected length")
             return
-        
-        # Check for value equality
+
         for i in range(len(expected_samples)):
-            if abs(samples[i] - expected_samples[i]) < 0.01:
-                continue
-            else:
-                messagebox.showerror("Error", "The signal values do not match the expected values")
+            if samples[i] != expected_samples[i]:  
+                messagebox.showerror("Error", f"The signal value at index {i} does not match: expected {expected_samples[i]}, got {samples[i]}")
                 return
-            
+
         messagebox.showinfo("Success", "Test case passed successfully")
-        
+
     except FileNotFoundError:
         messagebox.showerror("Error", "The file does not exist")
 
@@ -365,20 +359,58 @@ def CheckSamples():
     file2 = filedialog.askopenfilename(title="Select the second file")
 
     if file1 and file2:
-        # Read the samples from file1
         expected_samples = []
         with open(file1, 'r') as f:
             for _ in range(3):
                 f.readline()
             for line in f:
                 L = line.strip()
-                if len(L.split()) == 2:  # Check for two elements
+                if len(L.split()) == 2:
                     L = L.split()
-                    V1 = int(L[0])       # First element as integer
-                    V2 = float(L[1])     # Second element as float
+                    V1 = int(L[0])
+                    V2 = float(L[1])
                     expected_samples.append(V2)
                 else:
-                    break  # Exit if format is incorrect
-        SignalSamplesAreEqual(file1, expected_samples)
+                    break 
+
+        SignalSamplesAreEqual(file2, expected_samples)  
     else:
-        messagebox.showwarning("Warning", "You must select all files.")   
+        messagebox.showwarning("Warning", "You must select all files.")
+def Accumulation(file1,outputFile):
+    try:
+        dict1 = {}
+        sums = [0, 0, 0]  
+        with open(file1, 'r') as f1:
+            for i in range(3):
+                line = f1.readline()
+                if line:
+                    value = float(line.strip())
+                    sums[i] += value 
+            for line in f1:
+                index, value = line.split()
+                dict1[int(index)] = float(value)
+        max_value = max(dict1.values())
+        min_value = min(dict1.values())
+        result = 0
+        with open(outputFile, 'w') as out_file:
+            out_file.write(f" {sums[0]}\n")
+            out_file.write(f" {sums[1]}\n")
+            out_file.write(f" {sums[2]}\n")
+            all_indices = set(dict1.keys())
+            for index in sorted(all_indices):
+                value1 = dict1.get(index, 0)
+                result = result + value1
+                out_file.write(f"{index} {result}\n")
+        messagebox.showinfo("Operation completed successfully", f"Results saved in {outputFile}")
+    except FileNotFoundError:
+        messagebox.showerror("Error", "One of the files is missing.")
+    except Exception as e:
+        messagebox.showerror("An error occurred", str(e))
+def ChooseFileForAccumulation():
+    file1 = filedialog.askopenfilename(title="Select the first file")
+    output_file = filedialog.asksaveasfilename(title="Select output file", defaultextension=".txt")
+
+    if file1 and output_file:
+        Accumulation(file1, output_file)
+    else:
+        messagebox.showwarning("Warning", "You must select all files.")     
