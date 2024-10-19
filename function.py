@@ -414,3 +414,94 @@ def ChooseFileForAccumulation():
         Accumulation(file1, output_file)
     else:
         messagebox.showwarning("Warning", "You must select all files.")     
+# Importing all Needed Libraries
+from tkinter import *
+from tkinter import ttk
+from tkinter import Tk
+from tkinter import filedialog
+from tkinter import   filedialog, messagebox
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from function import *
+
+
+
+
+
+def Multiplication(constEN):
+    try:
+        file1 = filedialog.askopenfilename(filetypes=[("Text files", "*.txt")])
+        const = int(constEN.get())
+        signal_dic ={}
+        if not file1 :
+           messagebox.showerror("Error","No file selected.")
+           return
+        
+        with open(file1,'r') as file:
+           lines = file.readlines()
+
+        signal_type = int(lines[0].strip())
+        isPeriodic = int(lines[1].strip())
+        sampling_number = int(lines[2].strip())
+
+        for line in lines[3:]:
+            index , value = line.split()
+            signal_dic[int(index)] = int(value)
+        output_signal = {key: value * const for key , value in signal_dic.items()}
+        output_file = filedialog.asksaveasfilename(filetypes=[("Text files", "*.txt")])
+        if output_file:
+            with open(output_file, 'w') as out_file:
+                out_file.write(f"{signal_type} \n")
+                out_file.write(f"{isPeriodic} \n")
+                out_file.write(f"{sampling_number} \n")
+                for key, value in output_signal.items():
+                    out_file.write(f"{key} {value} \n")
+
+            messagebox.showinfo("Success", "Output signal saved successfully.")
+        else:
+            messagebox.showwarning("Warning", "No output file selected.")
+    except ValueError:
+        messagebox.showerror("Error","Please provide a valid integer or file.")
+    except Exception as e:
+        messagebox.showerror("An error occurred", str(e))    
+def Squaring():
+    try:
+        file1 = filedialog.askopenfilename(filetypes=[("Text files", "*.txt")])
+        
+        signal_dic ={}
+        if not file1 :
+           messagebox.showerror("Error","No file selected.")
+           return
+        
+        with open(file1,'r') as file:
+           lines = file.readlines()
+
+        signal_type = int(lines[0].strip())
+        isPeriodic = int(lines[1].strip())
+        sampling_number = int(lines[2].strip())
+
+        for line in lines[3:]:
+            index , value = line.split()
+            signal_dic[int(index)] = int(value)
+
+        output_signal = {key: value * value for key , value in signal_dic.items()}
+
+        output_file = filedialog.asksaveasfilename(filetypes=[("Text files", "*.txt")])
+        
+        if output_file:
+            with open(output_file, 'w') as out_file:
+                out_file.write(f"{signal_type} \n")
+                out_file.write(f"{isPeriodic} \n")
+                out_file.write(f"{sampling_number} \n")
+                for key, value in output_signal.items():
+                    out_file.write(f"{key} {value} \n")
+            messagebox.showinfo("Success", "Output signal saved successfully.")
+        else:
+            messagebox.showwarning("Warning", "No output file selected.")
+    except ValueError:
+        messagebox.showerror("Error","Please provide a valid integer or file.")
+    except Exception as e:
+        messagebox.showerror("An error occurred", str(e))
