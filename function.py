@@ -20,7 +20,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 SignalType = 0
 IsPeriodic = 0
 
-def Normalization(file1,outputFile):
+def Normalization(file1,outputFile,cmbo2):
     try:
         dict1 = {}
         sums = [0, 0, 0]  
@@ -40,10 +40,19 @@ def Normalization(file1,outputFile):
             out_file.write(f" {sums[1]}\n")
             out_file.write(f" {sums[2]}\n")
             all_indices = set(dict1.keys())
-            for index in sorted(all_indices):
-                value1 = dict1.get(index, 0)
-                result = (value1 - min_value)/(max_value-min_value)
-                out_file.write(f"{index} {result}\n")
+            if cmbo2.get() == "from 0 to 1":
+                for index in sorted(all_indices):
+                 value1 = dict1.get(index, 0)
+                 result = (value1 - min_value)/(max_value-min_value)
+                 result = round(result, 3)
+                 out_file.write(f"{index} {result}\n")
+            else:
+                for index in sorted(all_indices):
+                 value1 = dict1.get(index, 0)
+                 result = (2* (value1 - min_value)/(max_value-min_value) )-1
+                 result = round(result, 3)
+                 out_file.write(f"{index} {result}\n")
+
         messagebox.showinfo("Operation completed successfully", f"Results saved in {outputFile}")
     except FileNotFoundError:
         messagebox.showerror("Error", "One of the files is missing.")
@@ -145,12 +154,12 @@ def ChooseFileForSubtraction():
         SubtractFile(file1, file2, output_file)
     else:
         messagebox.showwarning("Warning", "You must select all files.")     
-def ChooseFileForNormalization():
+def ChooseFileForNormalization(cmbo2):
     file1 = filedialog.askopenfilename(title="Select the first file")
     output_file = filedialog.asksaveasfilename(title="Select output file", defaultextension=".txt")
 
     if file1 and output_file:
-        Normalization(file1, output_file)
+        Normalization(file1, output_file,cmbo2)
     else:
         messagebox.showwarning("Warning", "You must select all files.")     
 def GenerateSignal(En1, En2, En3, En4, cmbo1, plot):
@@ -414,23 +423,6 @@ def ChooseFileForAccumulation():
         Accumulation(file1, output_file)
     else:
         messagebox.showwarning("Warning", "You must select all files.")     
-# Importing all Needed Libraries
-from tkinter import *
-from tkinter import ttk
-from tkinter import Tk
-from tkinter import filedialog
-from tkinter import   filedialog, messagebox
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.figure import Figure
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from function import *
-
-
-
-
-
 def Multiplication(constEN):
     try:
         file1 = filedialog.askopenfilename(filetypes=[("Text files", "*.txt")])

@@ -22,6 +22,9 @@ fr1  = Frame(width='1200',height='720',bg='navajowhite')
 fr2  = Frame(fr1,width='350',height='280',bg='navajowhite')
 fr3  = Frame(fr1,width='300',height='280',bg='navajowhite')
 plot = Frame(width='1900',height='400',bg='navajowhite')
+
+
+
 Lb1  = Label(text=' Wave type ',fg='black',bg='white',font=25,width=25)
 Lb2  = Label(fr2,text=' Amplitude ',fg='black',bg='white',font=25,width=25)
 Lb3  = Label(fr2,text=' AnalogFrequency ',fg='black',bg='white',font=25,width=25)
@@ -32,13 +35,15 @@ Lb8  = Label(fr2,text=' Signal Information ',fg='black',bg='white',font=25,width
 Lb9  = Label(fr1,text=' Welcome TO Signal Digital Program ',fg='black',bg='white',font=25,width=35)
 Lb10 = Label(text=' Normalization range ',fg='black',bg='white',font=25,width=25)
 Lb11 = Label(text=' Multiplication constant ',fg='black',bg='white',font=25,width=25)
+
+
 bt1  = Button(MainScreen,text='Generate',fg='black',bg='white',width=15,height=2,command=lambda: GenerateSignal(En1, En2, En3, En4, cmbo1, plot))  
 bt2  = Button(MainScreen,text='Open Folder',fg='black',bg='white',command=ReadFile,width=15,height=2)
 bt3  = Button(MainScreen,text='Addition',fg='black',bg='white',width=15,height=2,command=ChooseFileForAddition)  
 bt4  = Button(MainScreen,text='Subtraction',fg='black',bg='white',width=15,height=2,command=ChooseFileForSubtraction)  
 bt5  = Button(MainScreen,text='Multiplication',fg='black',bg='white',width=15,height=2,command=lambda: Multiplication(En5))  
 bt6  = Button(MainScreen,text='Squaring',fg='black',bg='white',width=15,height=2,command=Squaring)  
-bt7  = Button(MainScreen,text='Normalization',fg='black',bg='white',width=15,height=2,command=ChooseFileForNormalization)  
+bt7  = Button(MainScreen,text='Normalization',fg='black',bg='white',width=15,height=2,command=lambda : ChooseFileForNormalization(cmbo2))  
 bt8  = Button(MainScreen,text='Accumulation ',fg='black',bg='white',width=15,height=2,command=ChooseFileForAccumulation)  
 bt9  = Button(MainScreen,text='Compare Signals ',fg='black',bg='white',width=15,height=2,command=CheckSamples)  
 
@@ -74,6 +79,7 @@ En2.place(x=40,y=100)
 En3.place(x=40,y=140)
 En4.place(x=40,y=180)
 En5.place(x=445,y=390)
+
 Lb1.place(x=75,y=310)
 Lb2.place(x=40,y=60)
 Lb3.place(x=40,y=100)
