@@ -553,7 +553,7 @@ def SaveQuantizeData(filename, skippedRows, quantizedValues, midpoints, level_In
         differences =  quantizedValues - originalSignal
         
         for binary, quantized_value, diff in zip(level_In_Binary, quantizedValues, differences):
-            f.write(f"{binary} {quantized_value:.2f} {diff:.2f}\n")
+            f.write(f"{binary} {quantized_value:.2f} \n")
 
 def SelectFile1(entreFile1):
     filePath = filedialog.askopenfilename(title="Select Input File", filetypes=(("Text files", "*.txt"), ("All files", "*.*")))
