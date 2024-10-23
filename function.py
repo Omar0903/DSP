@@ -20,162 +20,28 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 SignalType = 0
 IsPeriodic = 0
 
-def Normalization(file1,outputFile,cmbo2):
+
+
+
+
+
+# Task 1
+def GenerateSignal(En1, En2, En3, En4, cmbo1):
     try:
-        dict1 = {}
-        sums = [0, 0, 0]  
-        with open(file1, 'r') as f1:
-            for i in range(3):
-                line = f1.readline()
-                if line:
-                    value = float(line.strip())
-                    sums[i] += value 
-            for line in f1:
-                index, value = line.split()
-                dict1[int(index)] = float(value)
-        max_value = max(dict1.values())
-        min_value = min(dict1.values())
-        with open(outputFile, 'w') as out_file:
-            out_file.write(f" {sums[0]}\n")
-            out_file.write(f" {sums[1]}\n")
-            out_file.write(f" {sums[2]}\n")
-            all_indices = set(dict1.keys())
-            if cmbo2.get() == "from 0 to 1":
-                for index in sorted(all_indices):
-                 value1 = dict1.get(index, 0)
-                 result = (value1 - min_value)/(max_value-min_value)
-                 result = round(result, 3)
-                 out_file.write(f"{index} {result}\n")
-            else:
-                for index in sorted(all_indices):
-                 value1 = dict1.get(index, 0)
-                 result = (2* (value1 - min_value)/(max_value-min_value) )-1
-                 result = round(result, 3)
-                 out_file.write(f"{index} {result}\n")
-
-        messagebox.showinfo("Operation completed successfully", f"Results saved in {outputFile}")
-    except FileNotFoundError:
-        messagebox.showerror("Error", "One of the files is missing.")
-    except Exception as e:
-        messagebox.showerror("An error occurred", str(e))
-
-
-def AddFile(file1, file2, outputFile):
-    try:
-        dict1 = {}
-        dict2 = {}
-        sums = [0, 0, 0]  
-        with open(file1, 'r') as f1:
-            for i in range(3):
-                line = f1.readline()
-                if line:
-                    value = float(line.strip())
-                    sums[i] += value / 2  
-            for line in f1:
-                index, value = line.split()
-                dict1[int(index)] = float(value)
-        with open(file2, 'r') as f2:
-            for i in range(3):
-                line = f2.readline()
-                if line:
-                    value = float(line.strip())
-                    sums[i] += value / 2  
-            for line in f2:
-                index, value = line.split()
-                dict2[int(index)] = float(value)
-        with open(outputFile, 'w') as out_file:
-            out_file.write(f" {sums[0]}\n")
-            out_file.write(f" {sums[1]}\n")
-            out_file.write(f" {sums[2]}\n")
-            all_indices = set(dict1.keys()).union(set(dict2.keys()))
-            for index in sorted(all_indices):
-                value1 = dict1.get(index, 0)
-                value2 = dict2.get(index, 0)
-                result = value1 + value2
-                out_file.write(f"{index} {result}\n")
-        messagebox.showinfo("Operation completed successfully", f"Results saved in {outputFile}")
-    except FileNotFoundError:
-        messagebox.showerror("Error", "One of the files is missing.")
-    except Exception as e:
-        messagebox.showerror("An error occurred", str(e))
-def SubtractFile(file1, file2, outputFile):
-    try:
-        dict1 = {}
-        dict2 = {}
-        sums = [0, 0, 0]  
-        with open(file1, 'r') as f1:
-            for i in range(3):
-                line = f1.readline()
-                if line:
-                    value = float(line.strip())
-                    sums[i] += value / 2  
-            for line in f1:
-                index, value = line.split()
-                dict1[int(index)] = float(value)
-        with open(file2, 'r') as f2:
-            for i in range(3):
-                line = f2.readline()
-                if line:
-                    value = float(line.strip())
-                    sums[i] += value / 2  
-            for line in f2:
-                index, value = line.split()
-                dict2[int(index)] = float(value)
-        with open(outputFile, 'w') as out_file:
-            out_file.write(f" {sums[0]}\n")
-            out_file.write(f" {sums[1]}\n")
-            out_file.write(f" {sums[2]}\n")
-            all_indices = set(dict1.keys()).union(set(dict2.keys()))
-            for index in sorted(all_indices):
-                value1 = dict1.get(index, 0)
-                value2 = dict2.get(index, 0)
-                result = value1 - value2
-                out_file.write(f"{index} {result}\n")
-        messagebox.showinfo("Operation completed successfully", f"Results saved in {outputFile}")
-    except FileNotFoundError:
-        messagebox.showerror("Error", "One of the files is missing.")
-    except Exception as e:
-        messagebox.showerror("An error occurred", str(e))        
-def ChooseFileForAddition():
-    file1 = filedialog.askopenfilename(title="Select the first file")
-    file2 = filedialog.askopenfilename(title="Select the second file")
-    output_file = filedialog.asksaveasfilename(title="Select output file", defaultextension=".txt")
-
-    if file1 and file2 and output_file:
-        AddFile(file1, file2, output_file)
-    else:
-        messagebox.showwarning("Warning", "You must select all files.")
-def ChooseFileForSubtraction():
-    file1 = filedialog.askopenfilename(title="Select the first file")
-    file2 = filedialog.askopenfilename(title="Select the second file")
-    output_file = filedialog.asksaveasfilename(title="Select output file", defaultextension=".txt")
-
-    if file1 and file2 and output_file:
-        SubtractFile(file1, file2, output_file)
-    else:
-        messagebox.showwarning("Warning", "You must select all files.")     
-def ChooseFileForNormalization(cmbo2):
-    file1 = filedialog.askopenfilename(title="Select the first file")
-    output_file = filedialog.asksaveasfilename(title="Select output file", defaultextension=".txt")
-
-    if file1 and output_file:
-        Normalization(file1, output_file,cmbo2)
-    else:
-        messagebox.showwarning("Warning", "You must select all files.")     
-def GenerateSignal(En1, En2, En3, En4, cmbo1, plot):
-    try:
-        amplitude = float(En1.get())        
-        frequency = float(En2.get())         
-        PhaseShift = float(En4.get())        
-        SamplingRate = int(En3.get())     
+        amplitude = float(En1.get())
+        frequency = float(En2.get())
+        PhaseShift = float(En4.get())
+        SamplingRate = int(En3.get())
         duration = 2  
+
         if frequency >= 100:
             # Generate time values
             t = np.linspace(0, 1, int(SamplingRate), endpoint=False)
             if cmbo1.get() == "Sin":
                 signal = amplitude * np.sin(2 * np.pi * frequency * t + PhaseShift)
-            else:   
+            else:
                 signal = amplitude * np.cos(2 * np.pi * frequency * t + PhaseShift)
+
             # Discrete wave sampling
             n_samples = int(frequency)
             t_discrete = np.linspace(0, 1, n_samples, endpoint=False)
@@ -183,34 +49,33 @@ def GenerateSignal(En1, En2, En3, En4, cmbo1, plot):
                 discreteSignal = amplitude * np.sin(2 * np.pi * frequency * t_discrete + PhaseShift)
             elif cmbo1.get() == 'Cos':
                 discreteSignal = amplitude * np.cos(2 * np.pi * frequency * t_discrete + PhaseShift)
-            SaveWaveData(t, signal, t_discrete, discreteSignal, SamplingRate,SignalType,IsPeriodic)
-            for widget in plot.winfo_children():
-                widget.destroy()
-            # Create a new figure with a larger size
-            fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(8, 6))
+
+            # Save wave data
+            SaveWaveData(t, signal, t_discrete, discreteSignal, SamplingRate, SignalType, IsPeriodic)
+
             # Plot the continuous wave
+            fig1, ax1 = plt.subplots(figsize=(10, 5))
             ax1.plot(t, signal, label='Continuous Wave', color='b')
             ax1.set_title('Continuous Wave')
             ax1.set_xlabel('Time (s)')
             ax1.set_ylabel('Amplitude')
-            ax1.legend()
             ax1.grid(True)
+            ax1.legend()
+            ax1.set_ylim([-1.5 * amplitude, 1.5 * amplitude])  # Set y-limits
+            ax1.set_xlim([0, 0.01])  # Set x-limits
+            plt.show()  # Show the continuous wave plot
+
             # Plot the discrete wave
+            fig2, ax2 = plt.subplots(figsize=(10, 5))
             ax2.stem(t_discrete, discreteSignal, linefmt='r-', markerfmt='ro', basefmt='k-', label='Discrete Wave')
             ax2.set_title('Discrete Wave')
             ax2.set_xlabel('Time (s)')
             ax2.set_ylabel('Amplitude')
-            ax2.legend()
             ax2.grid(True)
-            ax1.set_ylim([-1.5 * amplitude, 1.5 * amplitude])
-            ax2.set_ylim([-1.5 * amplitude, 1.5 * amplitude])
-            ax1.set_xlim([0, 0.01]) 
-            ax2.set_xlim([0, 0.01])
-            # Display the plots on Tkinter window
-            from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-            canvas = FigureCanvasTkAgg(fig, master=plot)
-            canvas.draw()
-            canvas.get_tk_widget().pack()
+            ax2.legend()
+            ax2.set_ylim([-1.5 * amplitude, 1.5 * amplitude])  # Set y-limits
+            ax2.set_xlim([0, 0.01])  # Set x-limits
+            plt.show()  # Show the discrete wave plot
         else:
             # Code for the case where frequency is less than 100
             t = np.linspace(0, duration, int(SamplingRate * duration), endpoint=False)
@@ -257,14 +122,14 @@ def SaveWaveData(t, signal, t_discrete, discreteSignal, SamplingRate,IsPeriodic,
         try:
             with open(file_path, 'w') as file:
                 # Save continuous wave data
-                file.write(f"{SignalType}\n")
-                file.write(f"{IsPeriodic}\n")
-                file.write(f"{SamplingRate}\n")
+                file.write(f"{int(SignalType)}\n")
+                file.write(f"{int(IsPeriodic)}\n")
+                file.write(f"{int(SamplingRate)}\n")
                 for index, amplitude in enumerate(signal):
                     file.write(f"{index} {amplitude:.5f}\n")
-                file.write(f"{SignalType}\n")
-                file.write(f"{IsPeriodic}\n")
-                file.write(f"{SamplingRate}\n")
+                file.write(f"{int(SignalType)}\n")
+                file.write(f"{int(IsPeriodic)}\n")
+                file.write(f"{int(SamplingRate)}\n")
                 for index, amplitude in enumerate(discreteSignal):
                     file.write(f"{index}, {amplitude:.5f}\n")
 
@@ -385,44 +250,106 @@ def CheckSamples():
         SignalSamplesAreEqual(file2, expected_samples)  
     else:
         messagebox.showwarning("Warning", "You must select all files.")
-def Accumulation(file1,outputFile):
+# Task 2
+
+def AddFile(file1, file2, outputFile):
     try:
         dict1 = {}
+        dict2 = {}
         sums = [0, 0, 0]  
         with open(file1, 'r') as f1:
             for i in range(3):
                 line = f1.readline()
                 if line:
                     value = float(line.strip())
-                    sums[i] += value 
+                    sums[i] += value / 2  
             for line in f1:
                 index, value = line.split()
                 dict1[int(index)] = float(value)
-        max_value = max(dict1.values())
-        min_value = min(dict1.values())
-        result = 0
+        with open(file2, 'r') as f2:
+            for i in range(3):
+                line = f2.readline()
+                if line:
+                    value = float(line.strip())
+                    sums[i] += value / 2  
+            for line in f2:
+                index, value = line.split()
+                dict2[int(index)] = float(value)
         with open(outputFile, 'w') as out_file:
-            out_file.write(f" {sums[0]}\n")
-            out_file.write(f" {sums[1]}\n")
-            out_file.write(f" {sums[2]}\n")
-            all_indices = set(dict1.keys())
+            out_file.write(f" {int(sums[0])}\n")
+            out_file.write(f" {int(sums[1])}\n")
+            out_file.write(f" {int(sums[2])}\n")
+            all_indices = set(dict1.keys()).union(set(dict2.keys()))
             for index in sorted(all_indices):
                 value1 = dict1.get(index, 0)
-                result = result + value1
+                value2 = dict2.get(index, 0)
+                result = value1 + value2
                 out_file.write(f"{index} {result}\n")
         messagebox.showinfo("Operation completed successfully", f"Results saved in {outputFile}")
     except FileNotFoundError:
         messagebox.showerror("Error", "One of the files is missing.")
     except Exception as e:
         messagebox.showerror("An error occurred", str(e))
-def ChooseFileForAccumulation():
+def ChooseFileForAddition():
     file1 = filedialog.askopenfilename(title="Select the first file")
+    file2 = filedialog.askopenfilename(title="Select the second file")
     output_file = filedialog.asksaveasfilename(title="Select output file", defaultextension=".txt")
 
-    if file1 and output_file:
-        Accumulation(file1, output_file)
+    if file1 and file2 and output_file:
+        AddFile(file1, file2, output_file)
+    else:
+        messagebox.showwarning("Warning", "You must select all files.")
+
+
+def SubtractFile(file1, file2, outputFile):
+    try:
+        dict1 = {}
+        dict2 = {}
+        sums = [0, 0, 0]  
+        with open(file1, 'r') as f1:
+            for i in range(3):
+                line = f1.readline()
+                if line:
+                    value = float(line.strip())
+                    sums[i] += value / 2  
+            for line in f1:
+                index, value = line.split()
+                dict1[int(index)] = float(value)
+        with open(file2, 'r') as f2:
+            for i in range(3):
+                line = f2.readline()
+                if line:
+                    value = float(line.strip())
+                    sums[i] += value / 2  
+            for line in f2:
+                index, value = line.split()
+                dict2[int(index)] = float(value)
+        with open(outputFile, 'w') as out_file:
+            out_file.write(f" {int(sums)[0]}\n")
+            out_file.write(f" {int(sums[1])}\n")
+            out_file.write(f" {int(sums[2])}\n")
+            all_indices = set(dict1.keys()).union(set(dict2.keys()))
+            for index in sorted(all_indices):
+                value1 = dict1.get(index, 0)
+                value2 = dict2.get(index, 0)
+                result = value1 - value2
+                out_file.write(f"{index} {result}\n")
+        messagebox.showinfo("Operation completed successfully", f"Results saved in {outputFile}")
+    except FileNotFoundError:
+        messagebox.showerror("Error", "One of the files is missing.")
+    except Exception as e:
+        messagebox.showerror("An error occurred", str(e))        
+def ChooseFileForSubtraction():
+    file1 = filedialog.askopenfilename(title="Select the first file")
+    file2 = filedialog.askopenfilename(title="Select the second file")
+    output_file = filedialog.asksaveasfilename(title="Select output file", defaultextension=".txt")
+
+    if file1 and file2 and output_file:
+        SubtractFile(file1, file2, output_file)
     else:
         messagebox.showwarning("Warning", "You must select all files.")     
+ 
+
 def Multiplication(constEN):
     try:
         file1 = filedialog.askopenfilename(filetypes=[("Text files", "*.txt")])
@@ -459,6 +386,8 @@ def Multiplication(constEN):
         messagebox.showerror("Error","Please provide a valid integer or file.")
     except Exception as e:
         messagebox.showerror("An error occurred", str(e))    
+
+        
 def Squaring():
     try:
         file1 = filedialog.askopenfilename(filetypes=[("Text files", "*.txt")])
@@ -497,3 +426,174 @@ def Squaring():
         messagebox.showerror("Error","Please provide a valid integer or file.")
     except Exception as e:
         messagebox.showerror("An error occurred", str(e))
+
+
+def Normalization(file1,outputFile,cmbo2):
+    try:
+        dict1 = {}
+        sums = [0, 0, 0]  
+        with open(file1, 'r') as f1:
+            for i in range(3):
+                line = f1.readline()
+                if line:
+                    value = float(line.strip())
+                    sums[i] += value 
+            for line in f1:
+                index, value = line.split()
+                dict1[int(index)] = float(value)
+        max_value = max(dict1.values())
+        min_value = min(dict1.values())
+        with open(outputFile, 'w') as out_file:
+            out_file.write(f" {int(sums[0])}\n")
+            out_file.write(f" {int(sums[1])}\n")
+            out_file.write(f" {int(sums[2])}\n")
+            all_indices = set(dict1.keys())
+            if cmbo2.get() == "from 0 to 1":
+                for index in sorted(all_indices):
+                 value1 = dict1.get(index, 0)
+                 result = (value1 - min_value)/(max_value-min_value)
+                 result = round(result, 3)
+                 out_file.write(f"{index} {result}\n")
+            else:
+                for index in sorted(all_indices):
+                 value1 = dict1.get(index, 0)
+                 result = (2* (value1 - min_value)/(max_value-min_value) )- 1
+                 result = round(result, 3)
+                 out_file.write(f"{index} {result}\n")
+
+        messagebox.showinfo("Operation completed successfully", f"Results saved in {outputFile}")
+    except FileNotFoundError:
+        messagebox.showerror("Error", "One of the files is missing.")
+    except Exception as e:
+        messagebox.showerror("An error occurred", str(e))
+def ChooseFileForNormalization(cmbo2):
+    file1 = filedialog.askopenfilename(title="Select the first file")
+    output_file = filedialog.asksaveasfilename(title="Select output file", defaultextension=".txt")
+
+    if file1 and output_file:
+        Normalization(file1, output_file,cmbo2)
+    else:
+        messagebox.showwarning("Warning", "You must select all files.")     
+
+
+def Accumulation(file1,outputFile):
+    try:
+        dict1 = {}
+        sums = [0, 0, 0]  
+        with open(file1, 'r') as f1:
+            for i in range(3):
+                line = f1.readline()
+                if line:
+                    value = float(line.strip())
+                    sums[i] += value 
+            for line in f1:
+                index, value = line.split()
+                dict1[int(index)] = float(value)
+       
+        result = 0
+        with open(outputFile, 'w') as out_file:
+            out_file.write(f" {int(sums[0])}\n")
+            out_file.write(f" {int(sums[1])}\n")
+            out_file.write(f" {int(sums[2])}\n")
+            all_indices = set(dict1.keys())
+            for index in sorted(all_indices):
+                value1 = dict1.get(index, 0)
+                result = result + value1
+                out_file.write(f"{index} {result}\n")
+        messagebox.showinfo("Operation completed successfully", f"Results saved in {outputFile}")
+    except FileNotFoundError:
+        messagebox.showerror("Error", "One of the files is missing.")
+    except Exception as e:
+        messagebox.showerror("An error occurred", str(e))
+def ChooseFileForAccumulation():
+    file1 = filedialog.askopenfilename(title="Select the first file")
+    output_file = filedialog.asksaveasfilename(title="Select output file", defaultextension=".txt")
+
+    if file1 and output_file:
+        Accumulation(file1, output_file)
+    else:
+        messagebox.showwarning("Warning", "You must select all files.")     
+# task 3
+def QuantizeSignal(signal, numberOfLevels):
+    minValue = np.min(signal)
+    maxValue = np.max(signal)
+    stepSize = (maxValue - minValue) / numberOfLevels
+    midpoints = [minValue + (i + 0.5) * stepSize for i in range(numberOfLevels)]
+    quantizedValues = []
+    level_In_Binary = []
+    levelIndices = []
+    
+    for sample in signal:
+        levelIndex = min(int((sample - minValue) / stepSize), numberOfLevels - 1)
+        quantized_value = midpoints[levelIndex]
+        quantizedValues.append(quantized_value)
+        binaryLevel = format(levelIndex, '0' + str(int(np.log2(numberOfLevels))) + 'b')
+        level_In_Binary.append(binaryLevel)
+        levelIndices.append(levelIndex + 1)
+
+    return np.array(quantizedValues), midpoints, level_In_Binary, levelIndices
+
+def SaveQuantizeData1(filename, skippedRows, quantizedValues, midpoints, level_In_Binary, levelIndices, originalSignal):
+    with open(filename, 'w') as f:
+        for row in skippedRows:
+            f.write(f"{row}")
+        
+        # Calculate the difference between the original signal and quantized values
+        differences =   quantizedValues - originalSignal 
+        
+        for quantized_value, binary, level_index, diff in zip(quantizedValues, level_In_Binary, levelIndices, differences):
+            f.write(f"{level_index} {binary} {quantized_value:.3f} {diff:.3f}\n")
+
+def SaveQuantizeData(filename, skippedRows, quantizedValues, midpoints, level_In_Binary, levelIndices, originalSignal):
+    with open(filename, 'w') as f:
+        for row in skippedRows:
+            f.write(f"{row}")
+        
+        # Calculate the difference between the original signal and quantized values
+        differences =  quantizedValues - originalSignal
+        
+        for binary, quantized_value, diff in zip(level_In_Binary, quantizedValues, differences):
+            f.write(f"{binary} {quantized_value:.2f} {diff:.2f}\n")
+
+def SelectFile1(entreFile1):
+    filePath = filedialog.askopenfilename(title="Select Input File", filetypes=(("Text files", "*.txt"), ("All files", "*.*")))
+    if filePath:
+        entreFile1.delete(0, END)
+        entreFile1.insert(0, filePath)
+
+def SelectFile2(entreFile2):
+    filePath = filedialog.asksaveasfilename(title="Select Output File", defaultextension=".txt", filetypes=(("Text files", "*.txt"), ("All files", "*.*")))
+    if filePath:
+        entreFile2.delete(0, END)
+        entreFile2.insert(0, filePath)
+
+def ProcessFiles(entreFile1,entreFile2,combo_choice,entry_choice):
+    inputFile = entreFile1.get()
+    outputFile = entreFile2.get()
+    choice = combo_choice.get()
+    choice_value = entry_choice.get()
+
+    if not inputFile or not outputFile or not choice_value:
+        messagebox.showwarning("Warning", "Please select both files and enter levels or bits.")
+        return
+
+    try:
+        with open(inputFile, 'r') as f:
+            lines = f.readlines()
+
+        skippedRows = lines[:3]
+        signal = np.array([float(line.split()[1].strip()) for line in lines[3:]])
+
+        if choice == "Number of bits":
+            numberOfBits = int(choice_value)
+            numberOfLevels = 2 ** numberOfBits
+            quantizedValues, midpoints, level_In_Binary, levelIndices = QuantizeSignal(signal, numberOfLevels)
+            SaveQuantizeData(outputFile, skippedRows, quantizedValues, midpoints, level_In_Binary, levelIndices, signal)
+        else:
+            numberOfLevels = int(choice_value)
+            quantizedValues, midpoints, level_In_Binary, levelIndices = QuantizeSignal(signal, numberOfLevels)
+            SaveQuantizeData1(outputFile, skippedRows, quantizedValues, midpoints, level_In_Binary, levelIndices, signal)
+        
+        messagebox.showinfo("Success", f"Quantization complete!\nOutput saved to: {outputFile}")
+    except Exception as e:
+        messagebox.showerror("Error", str(e))
