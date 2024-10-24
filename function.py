@@ -544,7 +544,7 @@ def SaveQuantizeData1(filename, skippedRows, quantizedValues, midpoints, level_I
         for quantized_value, binary, level_index, diff in zip(quantizedValues, level_In_Binary, levelIndices, differences):
             f.write(f"{level_index} {binary} {quantized_value:.3f} {diff:.3f}\n")
 
-def SaveQuantizeData(filename, skippedRows, quantizedValues, midpoints, level_In_Binary, levelIndices, originalSignal):
+def SaveQuantizeData(filename, skippedRows, quantizedValues, level_In_Binary,  originalSignal):
     with open(filename, 'w') as f:
         for row in skippedRows:
             f.write(f"{row}")
@@ -588,7 +588,7 @@ def ProcessFiles(entreFile1,entreFile2,combo_choice,entry_choice):
             numberOfBits = int(choice_value)
             numberOfLevels = 2 ** numberOfBits
             quantizedValues, midpoints, level_In_Binary, levelIndices = QuantizeSignal(signal, numberOfLevels)
-            SaveQuantizeData(outputFile, skippedRows, quantizedValues, midpoints, level_In_Binary, levelIndices, signal)
+            SaveQuantizeData(outputFile, skippedRows, quantizedValues,  level_In_Binary, signal)
         else:
             numberOfLevels = int(choice_value)
             quantizedValues, midpoints, level_In_Binary, levelIndices = QuantizeSignal(signal, numberOfLevels)
@@ -597,3 +597,149 @@ def ProcessFiles(entreFile1,entreFile2,combo_choice,entry_choice):
         messagebox.showinfo("Success", f"Quantization complete!\nOutput saved to: {outputFile}")
     except Exception as e:
         messagebox.showerror("Error", str(e))
+# testing 
+def QuantizationTest1(file_name,Your_EncodedValues,Your_QuantizedValues):
+    expectedEncodedValues=[]
+    expectedQuantizedValues=[]
+    with open(file_name, 'r') as f:
+        line = f.readline()
+        line = f.readline()
+        line = f.readline()
+        line = f.readline()
+        while line:
+            # process line
+            L=line.strip()
+            if len(L.split(' '))==2:
+                L=line.split(' ')
+                V2=int(L[0])
+                V3=float(L[1])
+                expectedEncodedValues.append(V2)
+                expectedQuantizedValues.append(V3)
+                line = f.readline()
+            else:
+                break
+    if( (len(Your_EncodedValues)!=len(expectedEncodedValues)) or (len(Your_QuantizedValues)!=len(expectedQuantizedValues))):
+        messagebox.showerror("Warning", "QuantizationTest1 Test case failed, your signal have different length from the expected one ")
+        return
+    for i in range(len(Your_EncodedValues)):
+        if(Your_EncodedValues[i]!=expectedEncodedValues[i]):
+            messagebox.showerror("Warning", "QuantizationTest1 Test case failed, your EncodedValues have different EncodedValues from the expected one ")
+            return
+    for i in range(len(expectedQuantizedValues)):
+        if abs(Your_QuantizedValues[i] - expectedQuantizedValues[i]) < 0.01:
+            continue
+        else:
+            messagebox.showerror("Warning", "QuantizationTest1 Test case failed, your QuantizedValues have different values from the expected one ")
+            return
+    messagebox.showinfo("Operation completed successfully", "QuantizationTest1 Test case passed successfully ")
+def QuantizationTest2(file_name,Your_IntervalIndices,Your_EncodedValues,Your_QuantizedValues,Your_SampledError):
+    expectedIntervalIndices=[]
+    expectedEncodedValues=[]
+    expectedQuantizedValues=[]
+    expectedSampledError=[]
+    with open(file_name, 'r') as f:
+        line = f.readline()
+        line = f.readline()
+        line = f.readline()
+        line = f.readline()
+        while line:
+            # process line
+            L=line.strip()
+            if len(L.split(' '))==4:
+                L=line.split(' ')
+                V1=int(L[0])
+                V2=float(L[1])
+                V3=float(L[2])
+                V4=float(L[3])
+                expectedIntervalIndices.append(V1)
+                expectedEncodedValues.append(V2)
+                expectedQuantizedValues.append(V3)
+                expectedSampledError.append(V4)
+                line = f.readline()
+            else:
+                break
+    if(len(Your_IntervalIndices)!=len(expectedIntervalIndices)
+     or len(Your_EncodedValues)!=len(expectedEncodedValues)
+      or len(Your_QuantizedValues)!=len(expectedQuantizedValues)
+      or len(Your_SampledError)!=len(expectedSampledError)):
+        messagebox.showerror("Warning", "QuantizationTest2 Test case failed, your signal have different length from the expected one ")
+
+        return
+    for i in range(len(Your_IntervalIndices)):
+        if(Your_IntervalIndices[i]!=expectedIntervalIndices[i]):
+            messagebox.showerror("Warning", "QuantizationTest2 Test case failed, your signal have different indicies from the expected one")
+
+            return
+    for i in range(len(Your_EncodedValues)):
+        if(Your_EncodedValues[i]!=expectedEncodedValues[i]):
+            messagebox.showerror("Warning", "QuantizationTest2 Test case failed, your EncodedValues have different EncodedValues from the expected one")
+
+            return
+        
+    for i in range(len(expectedQuantizedValues)):
+        if abs(Your_QuantizedValues[i] - expectedQuantizedValues[i]) < 0.01:
+            continue
+        else:
+            messagebox.showerror("Warning", "QuantizationTest2 Test case failed, your QuantizedValues have different values from the expected one ")
+
+            return
+    for i in range(len(expectedSampledError)):
+        if abs(Your_SampledError[i] - expectedSampledError[i]) < 0.01:
+            continue
+        else:
+            messagebox.showerror("Warning", "QuantizationTest2 Test case failed, your SampledError have different values from the expected one ")
+
+
+            return
+    messagebox.showinfo("Operation completed successfully", "QuantizationTest2 Test case passed successfully")
+
+def test(cmbo):
+    file1 = filedialog.askopenfilename(title="Select the first file")
+    file2 = filedialog.askopenfilename(title="Select the second file")
+    if file1 and file2:
+        if cmbo.get() == "Number of bits":
+            expected_samples = []
+            expected_index = []
+            with open(file1, 'r') as f:
+                for _ in range(3):
+                    f.readline()
+                for line in f:
+                    L = line.strip()
+                    if len(L.split()) == 2:
+                        L = L.split()
+                        V1 = int(L[0])
+                        V2 = float(L[1])
+                        expected_samples.append(V2)
+                        expected_index.append(V1)
+                    else:
+                        break 
+
+            QuantizationTest1(file2,expected_index,expected_samples)
+        else :   
+            expected_samples = []
+            expected_index = []
+            IntervalIndices=[]
+            SampledError=[]
+            with open(file1, 'r') as f:
+                for _ in range(3):
+                    f.readline()
+                for line in f:
+                    L = line.strip()
+                    if len(L.split()) == 4:
+                        L = L.split()
+                        V1 = int(L[0])
+                        V2 = float(L[1])
+                        V3 = float(L[2])
+                        V4 = float(L[3])
+                        expected_index.append(V2)
+                        expected_samples.append(V3)
+                        IntervalIndices.append(V1)
+                        SampledError.append(V4)
+                    else:
+                        break 
+
+            QuantizationTest2(file2,IntervalIndices,expected_index,expected_samples,SampledError)
+
+    else:
+        messagebox.showwarning("Warning", "You must select all files.")
+        
