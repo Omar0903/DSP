@@ -12,13 +12,14 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from function import *
 from PIL import Image, ImageTk
+# from test import *
 
 class App:
     def __init__(self, master):
         self.master = master
         self.master.title("Multi-Page Example")
-        self.background_image = Image.open("j.jpg")  
-        self.background_photo = ImageTk.PhotoImage(self.background_image)
+        # self.background_image = Image.open("j.jpg")  
+        # self.background_photo = ImageTk.PhotoImage(self.background_image)
 
         # Initialize the first page
         self.page = 1
@@ -68,8 +69,8 @@ class App:
         bt1 = Button(fr1, text='Generate', fg='black', bg='white', width=25, height=2, command=lambda: GenerateSignal(En1, En2, En3, En4, cmbo1))  
         bt2 = Button(fr1, text='Open Folder', fg='black', bg='white', command=ReadFile, width=25, height=2)
 
-        bt1.place(x=700, y=360)
-        bt2.place(x=1000, y=360)
+        bt1.place(x=850, y=360)
+        bt2.place(x=1050, y=360)
 
         Lb1.place(x=40, y=220)
         Lb2.place(x=40, y=60)
@@ -158,8 +159,14 @@ class App:
         entry_choice = Entry( width=10)
         entry_choice.place(x=670,y=310)
 
+
         button_process = Button( text="Quantize signal", command= lambda :ProcessFiles(entreFile1,entreFile2,combo_choice,entry_choice))
         button_process.place(x=660,y=340)
+
+        test1 = Button( text="QuanTest1",width=25,height=2,background="white",command=lambda: test(combo_choice))
+        test1.place(x=900, y=500)
+        # test2 = Button( text="QuanTest2",width=10,height=2,background="white" )
+        # test2.place(x=1000, y=500)
     def next(self):
         if self.page < 3:  
             self.page += 1
