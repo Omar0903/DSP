@@ -3,7 +3,7 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import Tk
 from tkinter import filedialog
-from tkinter import   filedialog, messagebox
+from tkinter import   filedialog, messagebox,END
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -16,7 +16,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 
 
-
+# Global variables
 SignalType = 0
 IsPeriodic = 0
 
@@ -567,13 +567,13 @@ def SelectFile2(entreFile2):
         entreFile2.delete(0, END)
         entreFile2.insert(0, filePath)
 
-def ProcessFiles(entreFile1,entreFile2,combo_choice,entry_choice):
+def ProcessFilesForQuantization(entreFile1,entreFile2,combo_choice,entry_choice):
     inputFile = entreFile1.get()
     outputFile = entreFile2.get()
     choice = combo_choice.get()
-    choice_value = entry_choice.get()
+    choiceValue = entry_choice.get()
 
-    if not inputFile or not outputFile or not choice_value:
+    if not inputFile or not outputFile or not choiceValue:
         messagebox.showwarning("Warning", "Please select both files and enter levels or bits.")
         return
 
@@ -585,12 +585,12 @@ def ProcessFiles(entreFile1,entreFile2,combo_choice,entry_choice):
         signal = np.array([float(line.split()[1].strip()) for line in lines[3:]])
 
         if choice == "Number of bits":
-            numberOfBits = int(choice_value)
+            numberOfBits = int(choiceValue)
             numberOfLevels = 2 ** numberOfBits
             quantizedValues, midpoints, level_In_Binary, levelIndices = QuantizeSignal(signal, numberOfLevels)
             SaveQuantizeData(outputFile, skippedRows, quantizedValues,  level_In_Binary, signal)
         else:
-            numberOfLevels = int(choice_value)
+            numberOfLevels = int(choiceValue)
             quantizedValues, midpoints, level_In_Binary, levelIndices = QuantizeSignal(signal, numberOfLevels)
             SaveQuantizeData1(outputFile, skippedRows, quantizedValues, midpoints, level_In_Binary, levelIndices, signal)
         
@@ -693,7 +693,7 @@ def QuantizationTest2(file_name,Your_IntervalIndices,Your_EncodedValues,Your_Qua
             return
     messagebox.showinfo("Operation completed successfully", "QuantizationTest2 Test case passed successfully")
 
-def test(cmbo):
+def QuantizationTest(cmbo):
     file1 = filedialog.askopenfilename(title="Select the first file")
     file2 = filedialog.askopenfilename(title="Select the second file")
     if file1 and file2:
@@ -743,3 +743,92 @@ def test(cmbo):
     else:
         messagebox.showwarning("Warning", "You must select all files.")
         
+# Task 3
+def ReadFrequencyComponents(file_path):
+    frequencyComponents = []
+    skippedRows = []
+    try:
+        with open(file_path, 'r') as file:
+            for i, line in enumerate(file):
+                if i < 3: 
+                    skippedRows.append(line.strip())  # Save the first 3 rows
+                    continue
+                line = line.strip().replace('f', '')  # Remove unwanted 'f' characters
+                try:
+                    magnitude, phase = map(float, line.split(','))  # Convert to float
+                    frequencyComponents.append((magnitude, phase))
+                except ValueError:
+                    print(f"Skipping malformed line {i + 1}: {line}")
+        return skippedRows, frequencyComponents
+    except FileNotFoundError:
+        print(f"Error: File '{file_path}' not found.")
+        return None, None
+
+# Function to convert polar to rectangular form
+def Convert(frequencyComponents):
+    convertComponents = []
+    for magnitude, phase in frequencyComponents:
+        real = magnitude * np.cos(phase)  
+        imag = magnitude * np.sin(phase)  
+        convertComponents.append(real + 1j * imag) 
+    return np.array(convertComponents)
+
+# Function to apply IDFT
+def IDFTConvert(convertComponents):
+    N = len(convertComponents)
+    timeSignal = np.zeros(N, dtype=complex)
+    for n in range(N):
+        for k in range(N):
+            timeSignal[n] += convertComponents[k] * np.exp(1j * (2 * np.pi / N) * k * n)
+    return timeSignal / N  # Normalize
+
+# Function to select input file
+def SelectFile1(entreFile1):
+    filePath = filedialog.askopenfilename(title="Select Input File", filetypes=(("Text files", "*.txt"), ("All files", "*.*")))
+    if filePath:
+        entreFile1.delete(0, END)
+        entreFile1.insert(0, filePath)
+
+# Function to select output file
+def SelectFile2(entreFile2):
+    filePath = filedialog.asksaveasfilename(title="Select Output File", defaultextension=".txt", filetypes=(("Text files", "*.txt"), ("All files", "*.*")))
+    if filePath:
+        entreFile2.delete(0, END)
+        entreFile2.insert(0, filePath)
+
+# Function to process the files for DFT
+def ProcessFilesForDFT(entreFile1, entreFile2):
+    input_file = entreFile1.get()
+    output_file = entreFile2.get()
+
+    if not input_file or not output_file:
+        messagebox.showerror("Error", "Please select both input and output files.")
+        return
+    
+    # Read frequency components
+    skippedRows, frequencyComponents = ReadFrequencyComponents(input_file)
+    
+    if frequencyComponents is None:
+        return  # Exit if the file was not found or unreadable
+
+    # Convert polar to rectangular components
+    convertComponents = Convert(frequencyComponents)
+
+    # Apply IDFT to get the time-domain signal
+    reconstructed_signal = IDFTConvert(convertComponents)
+
+    # Write to output file
+    with open(output_file, 'w') as out_file:
+        # Write the first three rows (header)
+        for line in skippedRows:
+            out_file.write(line + '\n')
+
+        # Write the index, magnitude
+        for index, value in enumerate(reconstructed_signal):
+            realPart = round(value.real, 2)
+            imagPart = round(value.imag, 2)
+            magnitude = int(round(np.sqrt(realPart**2 + imagPart**2), 2))  # Calculate magnitude
+            out_file.write(f"{index} {magnitude}\n")
+
+    messagebox.showinfo("Success", "Processing complete. Output saved.")
+
