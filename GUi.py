@@ -11,6 +11,9 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from function import *
 from PIL import Image, ImageTk
+import cv2
+
+
 # from test import *
 
 class App:
@@ -20,17 +23,19 @@ class App:
         # self.background_image = Image.open("j.jpg")  
         # self.background_photo = ImageTk.PhotoImage(self.background_image)
 
-        # Initialize the first page
-        self.page = 1
+      # Initialize the first page
+        self.page = 0
+     
         self.create_page()
-
     def create_page(self):
         # Clear previous widgets
         for widget in self.master.winfo_children():
             widget.destroy()
 
         # Create content based on the current page
-        if self.page == 1:
+        if self.page == 0:
+            self.create_page_zero()
+        elif self.page == 1:
             self.create_page_one()
         elif self.page == 2:
             self.create_page_two()
@@ -49,6 +54,11 @@ class App:
         next_button = Button(self.master, text="Next", command=self.next, bg="white", width=20)
         next_button.place(x=1100, y=680)
 
+
+    def create_page_zero(self):
+        label1 = Label(self.master, text="Welcome to digital signal proccessing project",font=("Arial", 25), background='white', width=50, justify="center",)
+        label1.place(x=175, y=50)
+      
     def create_page_one(self):
        
 
@@ -202,19 +212,19 @@ class App:
         entry_choice = Entry( width=10)
         entry_choice.place(x=670,y=310)
 
-        test1 = Button( text="Testing",width=25,height=2,background="white",command=lambda: QuantizationTest(combo_choice))
+        test1 = Button( text="Testing",width=25,height=2,background="white",command= CompareTask3)
         test1.place(x=900, y=500)
     def create_page_five(self):
         label = Label( text="Quantization of Signals", font=25, bg='white',width=50,justify="center")
         label.place(x=400, y=20)
 
     def next(self):
-        if self.page < 5:  
+        if self.page < 4:  
             self.page += 1
             self.create_page()
 
     def back(self):
-        if self.page > 1:
+        if self.page > 0:
             self.page -= 1
             self.create_page()
 

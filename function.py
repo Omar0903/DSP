@@ -9,6 +9,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import math
 
 
 
@@ -743,7 +744,7 @@ def QuantizationTest(cmbo):
     else:
         messagebox.showwarning("Warning", "You must select all files.")
         
-# Task 3
+# Task 4
 def ReadFrequencyComponents(file_path):
     frequencyComponents = []
     skippedRows = []
@@ -783,18 +784,18 @@ def IDFTConvert(convertComponents):
     return timeSignal / N  # Normalize
 
 # Function to select input file
-def SelectFile1(entreFile1):
-    filePath = filedialog.askopenfilename(title="Select Input File", filetypes=(("Text files", "*.txt"), ("All files", "*.*")))
-    if filePath:
-        entreFile1.delete(0, END)
-        entreFile1.insert(0, filePath)
+# def SelectFile1(entreFile1):
+#     filePath = filedialog.askopenfilename(title="Select Input File", filetypes=(("Text files", "*.txt"), ("All files", "*.*")))
+#     if filePath:
+#         entreFile1.delete(0, END)
+#         entreFile1.insert(0, filePath)
 
-# Function to select output file
-def SelectFile2(entreFile2):
-    filePath = filedialog.asksaveasfilename(title="Select Output File", defaultextension=".txt", filetypes=(("Text files", "*.txt"), ("All files", "*.*")))
-    if filePath:
-        entreFile2.delete(0, END)
-        entreFile2.insert(0, filePath)
+# # Function to select output file
+# def SelectFile2(entreFile2):
+#     filePath = filedialog.asksaveasfilename(title="Select Output File", defaultextension=".txt", filetypes=(("Text files", "*.txt"), ("All files", "*.*")))
+#     if filePath:
+#         entreFile2.delete(0, END)
+#         entreFile2.insert(0, filePath)
 
 # Function to process the files for DFT
 def ProcessFilesForDFT(entreFile1, entreFile2):
@@ -831,4 +832,74 @@ def ProcessFilesForDFT(entreFile1, entreFile2):
             out_file.write(f"{index} {magnitude}\n")
 
     messagebox.showinfo("Success", "Processing complete. Output saved.")
+def SignalComapreAmplitude(SignalInput = [] ,SignalOutput= []):
+    if len(SignalInput) != len(SignalInput):
+        return False
+    else:
+        for i in range(len(SignalInput)):
+            if abs(SignalInput[i]-SignalOutput[i])>0.001:
+                return False
+            elif SignalInput[i]!=SignalOutput[i]:
+                return False
+        return True
 
+def RoundPhaseShift(P):
+    while P<0:
+        p+=2*math.pi
+    return float(P%(2*math.pi))
+
+#Use to test the PhaseShift of DFT
+def SignalComaprePhaseShift(SignalInput = [] ,SignalOutput= []):
+    if len(SignalInput) != len(SignalInput):
+        return False
+    else:
+        for i in range(len(SignalInput)):
+            A=round(SignalInput[i])
+            B=round(SignalOutput[i])
+            if abs(A-B)>0.0001:
+                return False
+            elif A!=B:
+                return False
+        return True
+def CompareTask3():
+    file1 = filedialog.askopenfilename(title="Select the first file")
+    file2 = filedialog.askopenfilename(title="Select the second file")
+    if file1 and file2:
+        samplesfile1 = []
+        indexfile1   = []
+        samplesfile2 = []
+        indexfile2   = []
+
+        with open(file1, 'r') as f:
+            for _ in range(3):
+                f.readline()
+            for line in f:
+                L = line.strip()
+                if len(L.split()) == 2:
+                    L = L.split()
+                    V1 = int(L[0])
+                    V2 = float(L[1])
+                    indexfile1.append(V1)
+                    samplesfile1.append(V2)
+                    
+        with open(file2, 'r') as f:
+            for _ in range(3):
+                f.readline()
+            for line in f:
+                L = line.strip()
+                if len(L.split()) == 2:
+                    L = L.split()
+                    V1 = int(L[0])
+                    V2 = float(L[1])
+                    indexfile2.append(V1)
+                    samplesfile2.append(V2)
+
+        # Store the results of the comparison functions
+        amplitude_result = SignalComapreAmplitude(indexfile1, indexfile2)
+        phase_result = SignalComaprePhaseShift(samplesfile1, samplesfile2)
+
+        # Check the results
+        if amplitude_result==True and phase_result == True:
+            messagebox.showinfo("Result", "Test case passed successfully")
+        else :
+             messagebox.showwarning("Warning", "invailed values.")
