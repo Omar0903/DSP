@@ -783,34 +783,19 @@ def IDFTConvert(convertComponents):
             timeSignal[n] += convertComponents[k] * np.exp(1j * (2 * np.pi / N) * k * n)
     return timeSignal / N  # Normalize
 
-# Function to select input file
-# def SelectFile1(entreFile1):
-#     filePath = filedialog.askopenfilename(title="Select Input File", filetypes=(("Text files", "*.txt"), ("All files", "*.*")))
-#     if filePath:
-#         entreFile1.delete(0, END)
-#         entreFile1.insert(0, filePath)
-
-# # Function to select output file
-# def SelectFile2(entreFile2):
-#     filePath = filedialog.asksaveasfilename(title="Select Output File", defaultextension=".txt", filetypes=(("Text files", "*.txt"), ("All files", "*.*")))
-#     if filePath:
-#         entreFile2.delete(0, END)
-#         entreFile2.insert(0, filePath)
-
 # Function to process the files for DFT
-def ProcessFilesForDFT(entreFile1, entreFile2):
-    input_file = entreFile1.get()
-    output_file = entreFile2.get()
+def ProcessFilesForiDFT(entry_file1, entry_file2):
+    input_file = entry_file1.get()
+    output_file = entry_file2.get()
 
     if not input_file or not output_file:
-        messagebox.showerror("Error", "Please select both input and output files.")
-        return
+        return "Please select both input and output files."
     
     # Read frequency components
     skippedRows, frequencyComponents = ReadFrequencyComponents(input_file)
     
     if frequencyComponents is None:
-        return  # Exit if the file was not found or unreadable
+        return "Error reading frequency components."
 
     # Convert polar to rectangular components
     convertComponents = Convert(frequencyComponents)
@@ -831,75 +816,146 @@ def ProcessFilesForDFT(entreFile1, entreFile2):
             magnitude = int(round(np.sqrt(realPart**2 + imagPart**2), 2))  # Calculate magnitude
             out_file.write(f"{index} {magnitude}\n")
 
-    messagebox.showinfo("Success", "Processing complete. Output saved.")
-def SignalComapreAmplitude(SignalInput = [] ,SignalOutput= []):
-    if len(SignalInput) != len(SignalInput):
-        return False
+    return "Processing complete. Output saved."
+
+# Function to compute DFT
+def DFT(file_path, output_path, sampling_frequency):
+    if not file_path:
+        return "Please select a file."
+    
+    if not output_path:
+        return "Please specify an output file."
+
+    try:
+        # Read input data (ignoring first three rows)
+        with open(file_path, 'r') as file:
+            lines = file.readlines()
+            data = []
+            signal_type = int(lines[0].strip())
+            is_periodic = int(lines[1].strip())
+            N1 = int(lines[2].strip())
+            for line in lines[3:]:
+                parts = line.strip().split()
+                if len(parts) == 2:
+                    time, amplitude = map(float, parts)
+                    data.append(amplitude)
+
+        signal_data = np.array(data)
+        N = len(signal_data)
+
+        frequency_components = []
+        for k in range(N):
+            real_sum = 0
+            imag_sum = 0
+            for n in range(N):
+                angle = -2 * np.pi * k * n / N
+                real_sum += signal_data[n] * np.cos(angle)
+                imag_sum += signal_data[n] * np.sin(angle)
+            frequency_components.append(complex(real_sum, imag_sum))
+
+        # All N frequencies
+        frequencies = np.arange(N) * (sampling_frequency / N)
+        amplitudes = np.abs(frequency_components)
+        phases = np.angle(frequency_components)
+
+        # Save output in the specified format
+        with open(output_path, 'w') as outfile:
+            outfile.write(f"{signal_type} \n")
+            is_periodic = 1
+            outfile.write(f"{is_periodic} \n")
+            outfile.write(f"{N1} \n")
+
+            for i in range(N):
+                amplitude_str = f"{int(amplitudes[i])}" if amplitudes[i].is_integer() else f"{amplitudes[i]:.14f}f"
+                phase_str = f"{int(phases[i])}" if phases[i].is_integer() else f"{phases[i]:.14f}f"
+                outfile.write(f"{amplitude_str} {phase_str}\n")
+
+        return f"DFT results saved to {output_path}."
+
+    except ValueError:
+        return "Invalid data or sampling frequency."
+    except Exception as e:
+        return f"An error occurred: {e}"
+
+# Function to check combo box selection and call appropriate function
+def check_and_process(combo_box, entry_file, entry_output_file, entry_sampling_freq):
+    selected_option = combo_box.get()
+    if selected_option == "DFT":
+        output_path = entry_output_file.get()
+        file_path = entry_file.get()
+        sampling_frequency = entry_sampling_freq.get()
+        if not sampling_frequency:
+            return "Please enter a sampling frequency."
+        try:
+            sampling_frequency = float(sampling_frequency)
+            result = DFT(file_path, output_path, sampling_frequency)
+            return result
+        except ValueError:
+            return "Invalid sampling frequency."
     else:
-        for i in range(len(SignalInput)):
-            if abs(SignalInput[i]-SignalOutput[i])>0.001:
-                return False
-            elif SignalInput[i]!=SignalOutput[i]:
-                return False
-        return True
+        result = ProcessFilesForiDFT(entry_file, entry_output_file)
+        return result
+def SignalCompareAmplitude(SignalInput=[], SignalOutput=[]):
+    if len(SignalInput) != len(SignalOutput):
+        return False
+    for i in range(len(SignalInput)):
+        if abs(SignalInput[i] - SignalOutput[i]) > 0.001:
+            return False
+    return True
 
 def RoundPhaseShift(P):
-    while P<0:
-        p+=2*math.pi
-    return float(P%(2*math.pi))
+    while P < 0:
+        P += 2 * math.pi
+    return float(P % (2 * math.pi))
 
-#Use to test the PhaseShift of DFT
-def SignalComaprePhaseShift(SignalInput = [] ,SignalOutput= []):
-    if len(SignalInput) != len(SignalInput):
+def SignalComparePhaseShift(SignalInput=[], SignalOutput=[]):
+    if len(SignalInput) != len(SignalOutput):
         return False
-    else:
-        for i in range(len(SignalInput)):
-            A=round(SignalInput[i])
-            B=round(SignalOutput[i])
-            if abs(A-B)>0.0001:
-                return False
-            elif A!=B:
-                return False
-        return True
+    for i in range(len(SignalInput)):
+        A = round(SignalInput[i], 4)  # Round to 4 decimal places for comparison
+        B = round(SignalOutput[i], 4)
+        if abs(A - B) > 0.0001:
+            return False
+    return True 
+
 def CompareTask3():
     file1 = filedialog.askopenfilename(title="Select the first file")
     file2 = filedialog.askopenfilename(title="Select the second file")
+    
     if file1 and file2:
         samplesfile1 = []
-        indexfile1   = []
+        indexfile1 = []
         samplesfile2 = []
-        indexfile2   = []
+        indexfile2 = []
 
+        # Read first file
         with open(file1, 'r') as f:
             for _ in range(3):
-                f.readline()
+                f.readline()  # Skip first three lines
             for line in f:
-                L = line.strip()
+                L = line.strip().replace('f', '')  # Remove 'f' before processing
                 if len(L.split()) == 2:
-                    L = L.split()
-                    V1 = int(L[0])
-                    V2 = float(L[1])
+                    V1, V2 = map(float, L.split())
                     indexfile1.append(V1)
                     samplesfile1.append(V2)
-                    
+
+        # Read second file
         with open(file2, 'r') as f:
             for _ in range(3):
-                f.readline()
+                f.readline()  # Skip first three lines
             for line in f:
-                L = line.strip()
+                L = line.strip().replace('f', '')  # Remove 'f' before processing
                 if len(L.split()) == 2:
-                    L = L.split()
-                    V1 = int(L[0])
-                    V2 = float(L[1])
+                    V1, V2 = map(float, L.split())
                     indexfile2.append(V1)
                     samplesfile2.append(V2)
 
         # Store the results of the comparison functions
-        amplitude_result = SignalComapreAmplitude(indexfile1, indexfile2)
-        phase_result = SignalComaprePhaseShift(samplesfile1, samplesfile2)
+        amplitude_result = SignalCompareAmplitude(indexfile1, indexfile2)
+        phase_result = SignalComparePhaseShift(samplesfile1, samplesfile2)
 
         # Check the results
-        if amplitude_result==True and phase_result == True:
+        if amplitude_result and phase_result:
             messagebox.showinfo("Result", "Test case passed successfully")
-        else :
-             messagebox.showwarning("Warning", "invailed values.")
+        else:
+            messagebox.showwarning("Warning", "Invalid values.")

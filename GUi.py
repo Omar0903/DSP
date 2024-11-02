@@ -199,21 +199,28 @@ class App:
         button_file2 = Button( text="Save As", command=lambda :SelectFile2(entreFile2))
         button_file2.place(x=670, y=220)
 
-        label_choice = Label( text="Select number of bits or levels:")
-        label_choice.place(x=610, y=250)
+        label_choice = Label( text="Select type of proccess:") 
+        label_choice.place(x=630, y=250)
 
         combo_choice = ttk.Combobox( values=["DFT","IDFT"])
         combo_choice.place(x=625, y=280)
         combo_choice.set("DFT")  
 
-        button_process = Button( text="Compute the DFT", command=lambda : ProcessFilesForDFT( entreFile1,entreFile2 ),width=17)
-        button_process.place(x=635,y=340)
+  
 
         entry_choice = Entry( width=10)
         entry_choice.place(x=670,y=310)
 
         test1 = Button( text="Testing",width=25,height=2,background="white",command= CompareTask3)
         test1.place(x=900, y=500)
+        def process_files():
+         result = check_and_process(combo_choice, entreFile1, entreFile2, entry_choice)
+         if isinstance(result, str):
+          messagebox.showinfo("Result", result)
+
+        button_process = tk.Button(MainScreen, text="Process", command=process_files)
+        button_process.pack()
+        button_process.place(x=675,y=340)
     def create_page_five(self):
         label = Label( text="Quantization of Signals", font=25, bg='white',width=50,justify="center")
         label.place(x=400, y=20)
