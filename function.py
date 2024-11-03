@@ -819,6 +819,11 @@ def ProcessFilesForiDFT(entry_file1, entry_file2):
     return "Processing complete. Output saved."
 
 # Function to compute DFT
+
+
+import numpy as np
+import matplotlib.pyplot as plt
+
 def DFT(file_path, output_path, sampling_frequency):
     if not file_path:
         return "Please select a file."
@@ -857,6 +862,28 @@ def DFT(file_path, output_path, sampling_frequency):
         frequencies = np.arange(N) * (sampling_frequency / N)
         amplitudes = np.abs(frequency_components)
         phases = np.angle(frequency_components)
+        
+        # Plotting frequency vs amplitude and frequency vs phase
+        plt.figure(figsize=(8, 6))
+
+        # Frequency vs Amplitude
+        plt.subplot(2, 1, 1)
+        plt.stem(frequencies, amplitudes, basefmt=" ")
+        plt.title('Frequency vs Amplitude')
+        plt.xlabel('Frequency (Hz)')
+        plt.ylabel('Amplitude')
+        plt.grid()
+
+        # Frequency vs Phase
+        plt.subplot(2, 1, 2)
+        plt.stem(frequencies, phases, basefmt=" ")
+        plt.title('Frequency vs Phase')
+        plt.xlabel('Frequency (Hz)')
+        plt.ylabel('Phase (radians)')
+        plt.grid()
+
+        plt.tight_layout()
+        plt.show()
 
         # Save output in the specified format
         with open(output_path, 'w') as outfile:
@@ -876,6 +903,9 @@ def DFT(file_path, output_path, sampling_frequency):
         return "Invalid data or sampling frequency."
     except Exception as e:
         return f"An error occurred: {e}"
+
+    
+
 
 # Function to check combo box selection and call appropriate function
 def check_and_process(combo_box, entry_file, entry_output_file, entry_sampling_freq):
