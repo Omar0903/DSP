@@ -821,9 +821,6 @@ def ProcessFilesForiDFT(entry_file1, entry_file2):
 # Function to compute DFT
 
 
-import numpy as np
-import matplotlib.pyplot as plt
-
 def DFT(file_path, output_path, sampling_frequency):
     if not file_path:
         return "Please select a file."
@@ -862,25 +859,31 @@ def DFT(file_path, output_path, sampling_frequency):
         frequencies = np.arange(N) * (sampling_frequency / N)
         amplitudes = np.abs(frequency_components)
         phases = np.angle(frequency_components)
+        theta = ((2*3.14)/(N*(1/sampling_frequency)))
         
         # Plotting frequency vs amplitude and frequency vs phase
         plt.figure(figsize=(8, 6))
 
-        # Frequency vs Amplitude
-        plt.subplot(2, 1, 1)
-        plt.stem(frequencies, amplitudes, basefmt=" ")
-        plt.title('Frequency vs Amplitude')
-        plt.xlabel('Frequency (Hz)')
-        plt.ylabel('Amplitude')
-        plt.grid()
 
+
+
+        
+        result_list = [theta * i for i in range(1, N+1)]
+        print(result_list)
+
+        plt.subplot(2, 1, 1)
+        plt.stem(result_list, amplitudes, basefmt=" ")
+        plt.title('Frequency vs amplitudes ')
+        plt.xlabel('Frequency (Hz)')
+        plt.ylabel('Adjusted Phase (radians)')
+        plt.grid()   
         # Frequency vs Phase
         plt.subplot(2, 1, 2)
-        plt.stem(frequencies, phases, basefmt=" ")
-        plt.title('Frequency vs Phase')
+        plt.stem(result_list, phases, basefmt=" ")
+        plt.title('Frequency vs Adjusted Phase ')
         plt.xlabel('Frequency (Hz)')
-        plt.ylabel('Phase (radians)')
-        plt.grid()
+        plt.ylabel('Adjusted Phase (radians)')
+        plt.grid()   
 
         plt.tight_layout()
         plt.show()
