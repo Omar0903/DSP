@@ -951,7 +951,7 @@ def SignalComparePhaseShift(SignalInput=[], SignalOutput=[]):
             return False
     return True 
 
-def CompareTask3():
+def CompareTask4():
     file1 = filedialog.askopenfilename(title="Select the first file")
     file2 = filedialog.askopenfilename(title="Select the second file")
     
@@ -992,3 +992,118 @@ def CompareTask3():
             messagebox.showinfo("Result", "Test case passed successfully")
         else:
             messagebox.showwarning("Warning", "Invalid values.")
+# Task 6
+def Readsignal(inputFile):
+    skippedRows = []
+    foldingSignal = []
+    
+    try:
+        with open(inputFile, 'r') as f:
+            # Read the first three rows (just values)
+            for i in range(3):
+                line = f.readline().strip()
+                skippedRows.append(int(line))
+            
+            # Read the remaining rows (index-value pairs)
+            for line in f:
+                index, value = line.strip().split()
+                foldingSignal.append((int(index), int(value)))
+                
+    except FileNotFoundError:
+        print(f"Error: File {inputFile} not found.")
+    except ValueError:
+        print("Error: Non-numeric data found in the file.")
+    
+    return skippedRows, foldingSignal
+
+
+# Function to reverse the values (Folding)
+def ReverseValues(signal):
+    values = [value for _, value in signal]
+    reversedValues = values[::-1]
+    
+    # Combine the original indices with the reversed values
+    reversedSignal = [(signal[i][0], reversedValues[i]) for i in range(len(signal))]
+    
+    return reversedSignal
+
+# Function to save the modified signal to a new file
+def SaveFile(inputFile, skippedRows, modifiedSignal):
+    try:
+        with open(inputFile, 'w') as f:
+            # Write the first three values unchanged (no indices)
+            for value in skippedRows:
+                f.write(f"{value}\n")
+            
+            # Write the remaining rows with the modified values
+            for index, value in modifiedSignal:
+                f.write(f"{index} {value}\n")
+        
+        print(f"Modified signal saved to {inputFile}")
+    except Exception as e:
+        print(f"Error saving the result to {inputFile}: {e}")
+
+# Function to shift the values based on the shift amount
+def Shifting(input_file, shifting, output_file=None):
+    new_data = []
+    with open(input_file, 'r') as file:
+        lines = file.readlines()
+        
+        # First 3 lines are assumed to have only values and are kept for output without modification
+        header_lines = lines[:3]
+        data_lines = lines[3:]
+        
+        # Add the first three value-only lines to the output
+        new_data.extend(header_lines)
+        
+        # Process each remaining line containing index and value
+        for line in data_lines:
+            # Assuming the format is 'index value'
+            index, value = map(int, line.split())
+            
+            # Shift the index
+            if int(shifting) < 0 :
+              new_index = index - shifting
+            else :
+                new_index = index - shifting
+            # Store the new index-value pair
+            new_data.append(f"{new_index} {value}\n")
+    
+    # Write to the output file if provided
+    if output_file:
+        with open(output_file, 'w') as out_file:
+            out_file.writelines(new_data)
+    
+    # Return the new lines if no output file is provided
+    return new_data if not output_file else None
+
+# To write the result to a new file
+# Shifting('input Shifting.txt', shifting=500, output_file='output.txt')
+
+# Function for handling the process choice (Folding or Shifting)
+def ChooseProccess(inputFile, outputFile, cmbo2, value):
+    shift_value = int(value.get())  # Get the shift value as an integer
+    
+    if cmbo2.get() == "Folding":
+        outputPath = outputFile.get()
+        inputPath = inputFile.get()
+        skippedRows, foldingSignal = Readsignal(inputPath)
+        reversedSignal = ReverseValues(foldingSignal)
+        SaveFile(outputPath, skippedRows, reversedSignal)
+        messagebox.showinfo("Information", "Folding done successfully!")
+    
+    elif cmbo2.get() == "Shifting":
+        outputPath = outputFile.get()
+        inputPath = inputFile.get()
+        
+        # Correct the order of arguments in the Shifting function
+        Shifting(inputPath, shift_value, outputPath)
+        messagebox.showinfo("Information", "Shifting done successfully!")
+    else :
+        outputPath = outputFile.get()
+        inputPath = inputFile.get()
+        skippedRows, foldingSignal = Readsignal(inputPath)
+        reversedSignal = ReverseValues(foldingSignal)
+        SaveFile(outputPath, skippedRows, reversedSignal)
+        Shifting(outputPath, shift_value, outputPath)
+        messagebox.showinfo("Information", "Shifting done successfully!")
