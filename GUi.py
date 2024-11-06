@@ -1,3 +1,4 @@
+# import Libraries
 import tkinter as tk
 from tkinter import Button, Label, Entry
 from tkinter import *
@@ -12,9 +13,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from function import *
 from PIL import Image, ImageTk
 import cv2
-
-
-# from test import *
+from test3 import *
 
 class App:
     def __init__(self, master):
@@ -34,21 +33,21 @@ class App:
 
         # Create content based on the current page
         if self.page == 0:
-            self.create_page_zero()
+            self.CreatePageZero()
         elif self.page == 1:
-            self.create_page_one()
+            self.CreatePageOne()
         elif self.page == 2:
-            self.create_page_two()
+            self.CreatePageTwo()
         elif self.page == 3:
-            self.create_page_three()
+            self.CreatePageThree()
         elif self.page == 4:
-            self.create_page_four()
+            self.CreatePageFour()
         elif self.page == 5:
-            self.create_page_five()
+            self.CreatePageFive()
         elif self.page == 6:
-            self.create_page_six()
+            self.CreatePageSix()
         elif self.page == 7:
-            self.create_page_seven()
+            self.CreatePageSeven()
 
 
         # Create Back and Next buttons for all pages
@@ -59,11 +58,11 @@ class App:
         next_button.place(x=1100, y=680)
 
 
-    def create_page_zero(self):
+    def CreatePageZero(self):
         label1 = Label(self.master, text="Welcome to digital signal proccessing project",font=("Arial", 25), background='white', width=50, justify="center",)
         label1.place(x=175, y=50)
       
-    def create_page_one(self):
+    def CreatePageOne(self):
        
 
         label = Label(self.master, text="Generation Wave Signals and plot it", font=25, background='white', width=50, justify="center")
@@ -111,7 +110,7 @@ class App:
         cmbo1.set('Sin')
         cmbo1.place(x=40, y=220, height=28, width=50)
 
-    def create_page_two(self):
+    def CreatePageTwo(self):
         label = Label(self.master, text="Operations on signals", font=25, bg='white',width=30,justify="center")
         label.pack(pady=20)
 
@@ -147,7 +146,7 @@ class App:
 
         
 
-    def create_page_three(self):
+    def CreatePageThree(self):
         label = Label( text="Quantization of Signals", font=25, bg='white',width=50,justify="center")
         label.place(x=400, y=20)
         label_file1 = Label( text="Input File:")
@@ -183,7 +182,7 @@ class App:
 
         test1 = Button( text="Quantization Test",width=25,height=2,background="white",command=lambda: QuantizationTest(combo_choice))
         test1.place(x=900, y=500)
-    def create_page_four(self):
+    def CreatePageFour(self):
         label = Label( text=" Discrete Fourier Transform ", font=25, bg='white',width=50,justify="center")
         label.place(x=400, y=20)
         label_file1 = Label( text="Input File:")
@@ -222,10 +221,10 @@ class App:
          if isinstance(result, str):
           messagebox.showinfo("Result", result)
 
-        button_process = tk.Button(MainScreen, text="Process", command=process_files)
+        button_process = Button(MainScreen, text="Process", command=process_files)
         button_process.pack()
         button_process.place(x=675,y=340)
-    def create_page_five(self):
+    def CreatePageFive(self):
         label = Label(text="Discrete cosine Transform", font=25, bg='white', width=50, justify="center")
         label.place(x=400, y=20)
 
@@ -245,16 +244,17 @@ class App:
 
         buttonFile2 = Button(text="Save As", command=lambda: SelectFile2(entreFile2))
         buttonFile2.place(x=670, y=220)
+        proccessType = ttk.Combobox(values=["Sharpening", "DCT"])
+        proccessType.place(x=625, y=280)
+        proccessType.set("Sharpening")  # Default to Sharpening
+        test = Button(text=" test", width=25, height=2, background="white")
+        test.place(x=900, y=500)
+        applyProccess = Button(text=" Apply process", width=11, background="white",command=lambda :sharpening(entreFile1, entreFile2))
+        applyProccess.place(x=660,y=340)
 
 
 
-
-
-        applyProccess = Button(text=" Apply process", width=25, height=2, background="white")
-        applyProccess.place(x=900, y=500)
-
-
-    def create_page_six(self):
+    def CreatePageSix(self):
         label = Label(text="Task 6", font=25, bg='white', width=50, justify="center")
         label.place(x=400, y=20)
 
@@ -312,3 +312,6 @@ if __name__ == "__main__":
     MainScreen.iconbitmap("DSP.ico")
     MainScreen.config(background='navajowhite')
     MainScreen.mainloop()
+
+
+
