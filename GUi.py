@@ -45,6 +45,10 @@ class App:
             self.create_page_four()
         elif self.page == 5:
             self.create_page_five()
+        elif self.page == 6:
+            self.create_page_six()
+        elif self.page == 7:
+            self.create_page_seven()
 
 
         # Create Back and Next buttons for all pages
@@ -211,7 +215,7 @@ class App:
         entry_choice = Entry( width=10)
         entry_choice.place(x=670,y=310)
 
-        test1 = Button( text="Testing",width=25,height=2,background="white",command= CompareTask3)
+        test1 = Button( text="Testing",width=25,height=2,background="white",command= CompareTask4)
         test1.place(x=900, y=500)
         def process_files():
          result = check_and_process(combo_choice, entreFile1, entreFile2, entry_choice)
@@ -222,11 +226,75 @@ class App:
         button_process.pack()
         button_process.place(x=675,y=340)
     def create_page_five(self):
-        label = Label( text="Quantization of Signals", font=25, bg='white',width=50,justify="center")
+        label = Label(text="Discrete cosine Transform", font=25, bg='white', width=50, justify="center")
         label.place(x=400, y=20)
 
+        labal2 = Label(text="Input File:")
+        labal2.place(x=670, y=60)
+        entreFile1 = Entry(width=50)
+        entreFile1.place(x=550, y=90)
+
+        buttonFile1 = Button(text="Load file", command=lambda: SelectFile1(entreFile1))
+        buttonFile1.place(x=670, y=120)
+
+        labal3 = Label(text="Output File:")
+        labal3.place(x=660, y=160)
+
+        entreFile2 = Entry(width=50)
+        entreFile2.place(x=550, y=190)
+
+        buttonFile2 = Button(text="Save As", command=lambda: SelectFile2(entreFile2))
+        buttonFile2.place(x=670, y=220)
+
+
+
+
+
+        applyProccess = Button(text=" Apply process", width=25, height=2, background="white")
+        applyProccess.place(x=900, y=500)
+
+
+    def create_page_six(self):
+        label = Label(text="Task 6", font=25, bg='white', width=50, justify="center")
+        label.place(x=400, y=20)
+
+        labal2 = Label(text="Input File:")
+        labal2.place(x=670, y=60)
+        entreFile1 = Entry(width=50)
+        entreFile1.place(x=550, y=90)
+
+        buttonFile1 = Button(text="Load file", command=lambda: SelectFile1(entreFile1))
+        buttonFile1.place(x=670, y=120)
+
+        labal3 = Label(text="Output File:")
+        labal3.place(x=660, y=160)
+
+        entreFile2 = Entry(width=50)
+        entreFile2.place(x=550, y=190)
+
+        buttonFile2 = Button(text="Save As", command=lambda: SelectFile2(entreFile2))
+        buttonFile2.place(x=670, y=220)
+
+        labal4 = Label(text="Select type of process:")
+        labal4.place(x=630, y=250)
+
+        proccessType = ttk.Combobox(values=["Shifting", "Folding", "Shifting & Folding"])
+        proccessType.place(x=625, y=280)
+        proccessType.set("Shifting")  # Default to Shifting
+
+        shiftingValue = Entry(width=10)
+        shiftingValue.place(x=670, y=310)
+
+        test = Button(text=" test", width=25, height=2, background="white")
+        test.place(x=900, y=500)
+        applyProccess = Button(text=" Apply process", width=11, background="white",
+                    command=lambda: ChooseProccess(entreFile1, entreFile2, proccessType, shiftingValue))
+        applyProccess.place(x=660,y=340)
+
+
+
     def next(self):
-        if self.page < 4:  
+        if self.page < 6:  
             self.page += 1
             self.create_page()
 
