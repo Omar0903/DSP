@@ -13,7 +13,6 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from function import *
 from PIL import Image, ImageTk
 import cv2
-from test3 import *
 
 class App:
     def __init__(self, master):
@@ -249,7 +248,7 @@ class App:
         proccessType.set("Sharpening")  # Default to Sharpening
         test = Button(text=" test", width=25, height=2, background="white")
         test.place(x=900, y=500)
-        applyProccess = Button(text=" Apply process", width=11, background="white",command=lambda :sharpening(entreFile1, entreFile2))
+        applyProccess = Button(text=" Apply process", width=11, background="white",command=lambda :chooseoperation(entreFile1, entreFile2,proccessType))
         applyProccess.place(x=660,y=340)
 
 
