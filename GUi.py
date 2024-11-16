@@ -1,25 +1,14 @@
 # import Libraries
 import tkinter as tk
-from tkinter import Button, Label, Entry
 from tkinter import *
 from tkinter import ttk
-from tkinter import Tk
-from tkinter import   filedialog, messagebox
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.figure import Figure
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from function import *
-from PIL import Image, ImageTk
+from test2 import *
 import cv2
 
 class App:
     def __init__(self, master):
         self.master = master
         self.master.title("Multi-Page Example")
-        # self.background_image = Image.open("j.jpg")  
-        # self.background_photo = ImageTk.PhotoImage(self.background_image)
 
       # Initialize the first page
         self.page = 0
@@ -119,7 +108,7 @@ class App:
         bt6  = Button(MainScreen,text='Squaring',fg='black',bg='white',width=20,height=2,command=Squaring)  
         bt7  = Button(MainScreen,text='Normalization',fg='black',bg='white',width=20,height=2,command=lambda : ChooseFileForNormalization(cmbo2))  
         bt8  = Button(MainScreen,text='Accumulation ',fg='black',bg='white',width=20,height=2,command=ChooseFileForAccumulation)  
-        bt9  = Button(MainScreen,text='Compare Signals ',fg='black',bg='white',width=20,height=2,command=CheckSamples) 
+        bt9  = Button(MainScreen,text='Compare Signals ',fg='black',bg='white',width=20,height=2,command=CompareTask2) 
 
         bt3.place(x=260,y=470)
         bt4.place(x=420,y=470)
@@ -172,14 +161,14 @@ class App:
         combo_choice.place(x=625, y=280)
         combo_choice.set("Number of bits")  
 
-        entry_choice = Entry( width=10)
-        entry_choice.place(x=670,y=310)
+        entreChoice = Entry( width=10)
+        entreChoice.place(x=670,y=310)
 
 
-        button_process = Button( text="Quantize signal", command= lambda :ProcessFilesForQuantization(entreFile1,entreFile2,combo_choice,entry_choice))
+        button_process = Button( text="Quantize signal", command= lambda :ProcessFilesForQuantization(entreFile1,entreFile2,combo_choice,entreChoice))
         button_process.place(x=660,y=340)
 
-        test1 = Button( text="Quantization Test",width=25,height=2,background="white",command=lambda: QuantizationTest(combo_choice))
+        test1 = Button( text="Quantization Test",width=25,height=2,background="white",command=lambda: CompareTask3(combo_choice))
         test1.place(x=900, y=500)
     def CreatePageFour(self):
         label = Label( text=" Discrete Fourier Transform ", font=25, bg='white',width=50,justify="center")
@@ -210,13 +199,13 @@ class App:
 
   
 
-        entry_choice = Entry( width=10)
-        entry_choice.place(x=670,y=310)
+        entreChoice = Entry( width=10)
+        entreChoice.place(x=670,y=310)
 
         test1 = Button( text="Testing",width=25,height=2,background="white",command= CompareTask4)
         test1.place(x=900, y=500)
         def process_files():
-         result = check_and_process(combo_choice, entreFile1, entreFile2, entry_choice)
+         result = check_and_process(combo_choice, entreFile1, entreFile2, entreChoice)
          if isinstance(result, str):
           messagebox.showinfo("Result", result)
 
@@ -246,7 +235,7 @@ class App:
         proccessType = ttk.Combobox(values=["Sharpening", "DCT"])
         proccessType.place(x=625, y=280)
         proccessType.set("Sharpening")  # Default to Sharpening
-        test = Button(text=" test", width=25, height=2, background="white")
+        test = Button(text=" Test", width=25, height=2, background="white",command=CompareTask5)
         test.place(x=900, y=500)
         applyProccess = Button(text=" Apply process", width=11, background="white",command=lambda :chooseoperation(entreFile1, entreFile2,proccessType))
         applyProccess.place(x=660,y=340)
@@ -284,7 +273,7 @@ class App:
         shiftingValue = Entry(width=10)
         shiftingValue.place(x=670, y=310)
 
-        test = Button(text=" test", width=25, height=2, background="white")
+        test = Button(text=" Test", width=25, height=2, background="white",command=CompareTask6)
         test.place(x=900, y=500)
         applyProccess = Button(text=" Apply process", width=11, background="white",
                     command=lambda: ChooseProccess(entreFile1, entreFile2, proccessType, shiftingValue))
