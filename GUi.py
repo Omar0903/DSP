@@ -235,7 +235,7 @@ class App:
         proccessType = ttk.Combobox(values=["Sharpening", "DCT"])
         proccessType.place(x=625, y=280)
         proccessType.set("Sharpening")  # Default to Sharpening
-        test = Button(text=" Test", width=25, height=2, background="white",command= lambda :CompareTask5(Value))
+        test = Button(text=" Test", width=25, height=2, background="white",command= lambda :CompareTask5(Value,proccessType))
         test.place(x=900, y=500)
         applyProccess = Button(text=" Apply process", width=11, background="white",command=lambda :chooseoperation(entreFile1, entreFile2,proccessType,Value))
         applyProccess.place(x=660,y=340)

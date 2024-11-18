@@ -972,7 +972,12 @@ def sharpening(input, output):
             # Read the remaining rows (index-value pairs)
             for line in f:
                 index, value = line.strip().split()
-                Signal.append((int(index), int(value)))
+                
+                # Remove the 'f' character and convert the value to float or integer
+                value = float(value.rstrip('f'))  # Remove 'f' and convert to float
+                
+                # Append the cleaned data to Signal
+                Signal.append((int(index), value))
 
             # Calculate the first and second derivatives
             for i in range(len(Signal)):
@@ -988,8 +993,8 @@ def sharpening(input, output):
 
                 # Second Derivative: (f[i+1] + f[i-1] - 2*f[i])
                 if i == 0 or i == len(Signal) - 1:
-                    # Handle first and last elements (no neighboring elements on both sides)
-                    secondDerivativeValue = value
+                    # Handle first and last elements (set second derivative to 0 or ignore for boundary points)
+                    secondDerivativeValue = 0  # Set to 0 for boundary points
                 else:
                     secondDerivativeValue = (
                         Signal[i + 1][1] + Signal[i - 1][1] - 2 * value
@@ -1034,29 +1039,25 @@ def sharpening(input, output):
             # Write the first three values unchanged (no indices)
             for value in skippedRows:
                 f.write(f"{value}\n")
-
-            # Write the original signal
-            f.write("\nOriginal Signal:\n")
-            for index, value in Signal:
-                f.write(f"{index} {value}\n")
-
-            # Write the first derivative
-            f.write("\nFirst Derivative:\n")
-            for index, value in firstDerivative:
-                f.write(f"{index} {value}\n")
-
-            # Write the second derivative
-            f.write("\nSecond Derivative:\n")
-            for index, value in secondDerivative:
-                f.write(f"{index} {value}\n")
+            # Write the index, original signal, first derivative, and second derivative on the same row
+            for i in range(len(Signal)):
+                index = Signal[i][0]
+                first_derivative_value = firstDerivative[i][1]
+                second_derivative_value = secondDerivative[i][1]
+                # Write all values on the same line
+                f.write(f"{int(index)} {int(first_derivative_value)} {int(second_derivative_value)}\n")
 
         messagebox.showinfo("successful", "Sharpening completed successfully.")
+    
     except FileNotFoundError:
         print(f"Error: File {input} not found.")
     except ValueError:
         print("Error: Non-numeric data found in the file.")
-
+    
     return skippedRows, Signal, firstDerivative, secondDerivative
+
+
+
 
 def DCT(input, output, m):
     input = input.get()
@@ -1110,30 +1111,60 @@ def chooseoperation(inputFile, outputFile, cmbo,m):
         DCT(inputFile, outputFile,m)
 
 
-def CompareTask5(m):
-    file1 = filedialog.askopenfilename(title="Select the first file")
-    file2 = filedialog.askopenfilename(title="Select the second file")
+from tkinter import filedialog, messagebox
 
-    if file1 and file2:
-        expected_samples = []
-        exceptedIndex = []
-        with open(file1, "r") as f:
-            for _ in range(3):
-                f.readline()
-            for line in f:
-                L = line.strip()
-                if len(L.split()) == 2:
-                    L = L.split()
-                    V1 = int(L[0])
-                    V2 = float(L[1])
-                    expected_samples.append(V2)
-                    exceptedIndex.append(V1)
-                else:
-                    break
+def CompareTask5(m, cmbo):
+    # Initialize exceptedIndex and expected_samples at the start to avoid unbound error
+    exceptedIndex = []
+    expected_samples = []
 
-        DCTSignalCompare(file2, exceptedIndex, expected_samples,m)
-    else:
-        messagebox.showwarning("Warning", "You must select all files.")
+    if cmbo.get() == "DCT":
+        # DCT comparison: Select two files
+        file1 = filedialog.askopenfilename(title="Select the first file")
+        file2 = filedialog.askopenfilename(title="Select the second file")
+        
+        if file1 and file2:
+            # Read data from file1
+            with open(file1, "r") as f:
+                for _ in range(3):  # Skip first three lines
+                    f.readline()
+                for line in f:
+                    L = line.strip().split()
+                    if len(L) == 2:
+                        V1 = int(L[0])
+                        V2 = float(L[1])
+                        expected_samples.append(V2)
+                        exceptedIndex.append(V1)
+                    else:
+                        break
+            # Call DCTSignalCompare (ensure this function is defined elsewhere)
+            DCTSignalCompare(file2, exceptedIndex, expected_samples, m)
+        else:
+            messagebox.showwarning("Warning", "You must select both files.")
+    
+    else:  # Sharpening comparison: Select one file
+        file1 = filedialog.askopenfilename(title="Select the first file")
+        
+        if file1:
+            # Read data from the selected file
+            with open(file1, "r") as f:
+                for _ in range(3):  # Skip first three lines
+                    f.readline()
+                for line in f:
+                    L = line.strip().split()
+                    if len(L) == 2:
+                        V1 = int(L[0])
+                        V2 = float(L[1])
+                        exceptedIndex.append(V1)
+                        expected_samples.append(V2)
+                    else:
+                        break
+            # Call SharpeningCompare (ensure this function is defined elsewhere)
+            SharpeningCompare(exceptedIndex, expected_samples)
+        else:
+            messagebox.showwarning("Warning", "You must select a file.")
+
+
 
 
 # Task 6

@@ -202,7 +202,32 @@ def DCTSignalCompare(fileName,OutputInices,OutputSamples,m):
             messagebox.showinfo("Error","DCT Test case failed, your signal have different values from the expected one") 
             return
     messagebox.showinfo("Successful","DCT Test case passed successfully")
-
+def SharpeningCompare(expectedOutput_first,expectedOutput_second):
+    FirstDrev=[]
+    SecondDrev=[]
+    if( (len(FirstDrev)!=len(expectedOutput_first)) or (len(SecondDrev)!=len(expectedOutput_second))):
+        messagebox.showerror("Error","mismatch in length") 
+        return
+    first=second=True
+    for i in range(len(expectedOutput_first)):
+        if abs(FirstDrev[i] - expectedOutput_first[i]) < 0.01:
+            continue
+        else:
+            first=False
+            messagebox.showerror("Error","1st derivative wrong")
+            return
+    for i in range(len(expectedOutput_second)):
+        if abs(SecondDrev[i] - expectedOutput_second[i]) < 0.01:
+            continue
+        else:
+            second=False
+            messagebox.showerror("Error","2nd derivative wrong") 
+            return
+    if(first and second):
+        messagebox.showinfo("Successful","Derivative Test case passed successfully")
+    else:
+         messagebox.showerror("Error","Derivative Test case failed")
+    return
 
 # task 6
 def ShiftFoldSignal(fileName,OutputInices,OutputSamples):      
