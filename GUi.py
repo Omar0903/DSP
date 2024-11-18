@@ -2,7 +2,7 @@
 import tkinter as tk
 from tkinter import *
 from tkinter import ttk
-from function import *
+from test2 import *
 import cv2
 
 class App:

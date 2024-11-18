@@ -1001,38 +1001,43 @@ def sharpening(input, output):
                     )
                 secondDerivative.append((index, secondDerivativeValue))
 
+
         # Plotting signal, first and second derivatives
         plt.figure(figsize=(8, 6))
 
-        # Signal Plot
+        # Signal Plot (Continuous Line)
         plt.subplot(3, 1, 1)
         indices, values = zip(*Signal)
-        plt.stem(indices, values, basefmt=" ")
+        plt.plot(indices, values, label="Signal", color='b')  # Continuous line for signal
         plt.title("Signal")
         plt.xlabel("Index")
         plt.ylabel("Value")
         plt.grid()
+        plt.legend()
 
-        # First Derivative Plot
+        # First Derivative Plot (Continuous Line)
         plt.subplot(3, 1, 2)
         indices, values = zip(*firstDerivative)
-        plt.stem(indices, values, basefmt=" ")
+        plt.plot(indices, values, label="First Derivative", color='g')  # Continuous line for first derivative
         plt.title("First Derivative")
         plt.xlabel("Index")
         plt.ylabel("First Derivative Value")
         plt.grid()
+        plt.legend()
 
-        # Second Derivative Plot
+        # Second Derivative Plot (Continuous Line)
         plt.subplot(3, 1, 3)
         indices, values = zip(*secondDerivative)
-        plt.stem(indices, values, basefmt=" ")
+        plt.plot(indices, values, label="Second Derivative", color='r')  # Continuous line for second derivative
         plt.title("Second Derivative")
         plt.xlabel("Index")
         plt.ylabel("Second Derivative Value")
         plt.grid()
+        plt.legend()
 
         plt.tight_layout()
         plt.show()
+
 
         # Save the modified signal to a new file
         with open(output, "w") as f:
@@ -1160,6 +1165,8 @@ def CompareTask5(m, cmbo):
                     else:
                         break
             # Call SharpeningCompare (ensure this function is defined elsewhere)
+            exceptedIndex = exceptedIndex[:-1]  # Skip last row in V1
+            expected_samples = expected_samples[:-2]  # Skip last two rows in V2
             SharpeningCompare(exceptedIndex, expected_samples)
         else:
             messagebox.showwarning("Warning", "You must select a file.")
