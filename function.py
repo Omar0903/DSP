@@ -1058,10 +1058,10 @@ def sharpening(input, output):
 
     return skippedRows, Signal, firstDerivative, secondDerivative
 
-
-def DCT(input, output):
+def DCT(input, output, m):
     input = input.get()
     output = output.get()
+    m = int(m.get()) 
     try:
         with open(input, "r") as file:
             lines = file.readlines()
@@ -1086,27 +1086,31 @@ def DCT(input, output):
                 sum_val += signal_data[n] * np.cos(
                     (np.pi / (4 * N)) * (2 * n - 1) * (2 * k - 1)
                 )
-                y[k] = factor * sum_val
+            y[k] = factor * sum_val
+        
         with open(output, "w") as outfile:
-            outfile.write(f"{signal_type} \n")
-            is_periodic = 1
+            outfile.write(f"{signal_type} \n")  
+            is_periodic = 1 
             outfile.write(f"{is_periodic} \n")
-            outfile.write(f"{N1} \n")
-            for value in y:
+            outfile.write(f"{N1} \n") 
+            
+            for value in y[:m]: 
                 outfile.write(f"0 {value}\n")
-        messagebox.showinfo("successful", "DCT completed successfully.")
+        
+        messagebox.showinfo("Successful", "DCT completed successfully.")
     except Exception as e:
         return f"An error occurred: {e}"
 
 
-def chooseoperation(inputFile, outputFile, cmbo):
+
+def chooseoperation(inputFile, outputFile, cmbo,m):
     if cmbo.get() == "Sharpening":
         sharpening(inputFile, outputFile)
     else:
-        DCT(inputFile, outputFile)
+        DCT(inputFile, outputFile,m)
 
 
-def CompareTask5():
+def CompareTask5(m):
     file1 = filedialog.askopenfilename(title="Select the first file")
     file2 = filedialog.askopenfilename(title="Select the second file")
 
@@ -1127,7 +1131,7 @@ def CompareTask5():
                 else:
                     break
 
-        DCTSignalCompare(file2, exceptedIndex, expected_samples)
+        DCTSignalCompare(file2, exceptedIndex, expected_samples,m)
     else:
         messagebox.showwarning("Warning", "You must select all files.")
 

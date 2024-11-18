@@ -164,7 +164,8 @@ def SignalComparePhaseShift(SignalInput=[], SignalOutput=[]):
     return True 
 
 # Task 5
-def DCTSignalCompare(fileName,OutputInices,OutputSamples):      
+def DCTSignalCompare(fileName,OutputInices,OutputSamples,m): 
+    m = int(m.get())     
     ExpectedIndices=[]
     ExpectedSamples=[]
     with open(fileName, 'r') as f:
@@ -187,14 +188,14 @@ def DCTSignalCompare(fileName,OutputInices,OutputSamples):
     print("Current Output Test file is: ")
     print(fileName)
     print("\n")
-    if (len(ExpectedSamples)!=len(OutputSamples)) and (len(ExpectedIndices)!=len(OutputInices)):
+    if (m!=len(OutputSamples)) and (m!=len(OutputInices)):
         messagebox.showinfo("Error","DCT Test case failed, your signal have different length from the expected one")
         return
-    for i in range(len(OutputInices)):
+    for i in range(m):
         if(OutputInices[i]!=ExpectedIndices[i]):
             messagebox.showinfo("Error","DCT Test case failed, your signal have different indicies from the expected one") 
             return
-    for i in range(len(ExpectedSamples)):
+    for i in range(m):
         if abs(OutputSamples[i] - ExpectedSamples[i]) < 0.01:
             continue
         else:
