@@ -1152,9 +1152,9 @@ def CompareTask5(m, cmbo):
                     f.readline()
                 for line in f:
                     L = line.strip().split()
-                    if len(L) == 2:
-                        V1 = int(L[0])
-                        V2 = float(L[1])
+                    if len(L) == 3:
+                        V1 = int(L[1])
+                        V2 = float(L[2])
                         exceptedIndex.append(V1)
                         expected_samples.append(V2)
                     else:

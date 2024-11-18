@@ -202,10 +202,15 @@ def DCTSignalCompare(fileName,OutputInices,OutputSamples,m):
             messagebox.showinfo("Error","DCT Test case failed, your signal have different values from the expected one") 
             return
     messagebox.showinfo("Successful","DCT Test case passed successfully")
-def SharpeningCompare(expectedOutput_first,expectedOutput_second):
-    FirstDrev=[]
-    SecondDrev=[]
+def SharpeningCompare(FirstDrev,SecondDrev):
+    expectedOutput_first = [1, 1, 1, 1, 1, 1, 1,1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    expectedOutput_second = [0, 0, 0, 0, 0,0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     if( (len(FirstDrev)!=len(expectedOutput_first)) or (len(SecondDrev)!=len(expectedOutput_second))):
+        # x =str(len(FirstDrev))
+        # y = str(len(expectedOutput_first))
+        # z = str (len(expectedOutput_second))
+        # t = str ( len(SecondDrev))
+        # print(x + "\n" + y + "\n" +t + "\n" + z + "\n")
         messagebox.showerror("Error","mismatch in length") 
         return
     first=second=True
