@@ -1344,13 +1344,32 @@ def Convolve(x, h, min_index):
     
     return y
 
+def MovingAverage(filePath ,windowSize):
+    indices, samples = [], []
+    with open(filePath, 'r') as f:
+        for _ in range(3):  # Skip the first three lines
+            f.readline()
+        for line in f:
+            values = line.strip().split()
+            if len(values) == 2:
+                indices.append(int(values[0]))
+                samples.append(float(values[1]))
+    windowSize = int(windowSize)
+    
+    if windowSize < 1 or windowSize > len(samples):
+        raise ValueError("Window size must be a positive integer smaller than or equal to the length of the samples.")   
+    result = np.zeros(len(samples) - windowSize + 1)
+    
+    # Compute the moving average
+    for i in range(len(result)):
+        result[i] = np.sum(samples[i:i+windowSize]) / windowSize
+    return result
 
-def ProcessConvolution(input1, input2, output, cmbo):
-    if cmbo.get() == "Convolution":
-        file1 = input1.get()
-        file2 = input2.get()
-        outputFile = output.get()  # Output file
-        
+def ProcessConvolution(input1, input2, output, cmbo,value):
+    file1 = input1.get()
+    file2 = input2.get()
+    outputFile = output.get()  
+    if cmbo.get() == "Convolution":        
         # Read the first three rows as comments
         with open(file1, "r") as f:
             first_three_rows_file1 = [next(f).strip() for _ in range(3)]
@@ -1390,8 +1409,21 @@ def ProcessConvolution(input1, input2, output, cmbo):
                 f.write(f"{index} {value}\n")
         
         messagebox.showinfo("Successful", "Convolution done successfully!")
-    else:
-        print("Not implemented yet")
+    elif cmbo.get()== "Smoothing":
+        windowSize = int(value.get())
+        y = MovingAverage(file1, windowSize)
+        outputLength = len(y)
+        try:
+        # Open the file in write mode
+            with open(outputFile, 'w') as file:
+                file.write(f"0\n")
+                file.write(f"0\n")
+                file.write(f"{outputLength}\n")
+                for i in range( len(y)):  
+                        file.write(f"{i} {y[i]:.6f}\n")     
+            messagebox.showinfo("Successful", "Convolution done successfully!")
+        except Exception as e:
+            print(f"Error saving the file: {e}")
 
 
 

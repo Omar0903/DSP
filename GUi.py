@@ -309,7 +309,10 @@ class App:
         
         buttonFile3 = Button(text="Save As", command=lambda: SelectFile2(entreFile3),background='white',width=15,height=1,justify="center")
         buttonFile3.place(x=850, y=170)
-
+        labal6 = Label(text="Window value",font=10, bg='white', justify="center")
+        labal6.place(x=100, y=250)
+        entre4 = Entry(fg='black',bg='white',font= 15,justify="center",width=10)
+        entre4.place(x=250, y=250)
 
 
         proccessType = ttk.Combobox(values=["Convolution","Smoothing","Correlation","Remove the DC"],width=15,height=20)
@@ -321,7 +324,7 @@ class App:
 
         test = Button(text=" Test", width=25, height=2, background="white",command=CompareTask6)
         test.place(x=1000, y=500)
-        applyProccess = Button(text=" Apply process", width=25, height=2, background="white",command=lambda: ProcessConvolution(entreFile1, entreFile2,entreFile3 ,proccessType))
+        applyProccess = Button(text=" Apply process", width=25, height=2, background="white",command=lambda: ProcessConvolution(entreFile1, entreFile2,entreFile3 ,proccessType,entre4))
         applyProccess.place(x=800,y=500)
 
 
