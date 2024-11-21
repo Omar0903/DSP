@@ -2,7 +2,7 @@
 import tkinter as tk
 from tkinter import *
 from tkinter import ttk
-from test2 import *
+from test import *
 import cv2
 
 class App:
@@ -280,11 +280,54 @@ class App:
         applyProccess = Button(text=" Apply process", width=11, background="white",
                     command=lambda: ChooseProccess(entreFile1, entreFile2, proccessType, shiftingValue))
         applyProccess.place(x=660,y=340)
+    def CreatePageSeven(self):
+        label = Label(text="Task 7", font=25, bg='white', width=50, justify="center")
+        label.place(x=400, y=20)
+
+        labal2 = Label(text="Input File 1:",font=10, bg='white', justify="center")
+        labal2.place(x=100, y=90)
+        entreFile1 = Entry(fg='black',bg='white',font= 15,justify="center",width=50)
+        entreFile1.place(x=250, y=90)
+        
+        labal3 = Label(text="Input File 2:",font=10, bg='white', justify="center")
+        labal3.place(x=100, y=130)
+        entreFile2 = Entry(fg='black',bg='white',font= 15,justify="center",width=50)
+        entreFile2.place(x=250, y=130)
+        labal4 = Label(text="Output File:",font=10, bg='white', justify="center")
+        labal4.place(x=100, y=170)
+        entreFile3 = Entry(fg='black',bg='white',font= 15,justify="center",width=50)
+        entreFile3.place(x=250, y=170)
+        
+        labal5 = Label(text="Select type of process:",font=20, bg='white', justify="center")
+        labal5.place(x=100, y=210)
+
+        buttonFile1 = Button(text="Load file1", command=lambda: SelectFile1(entreFile1),background='white',width=15,height=1,justify="center")
+        buttonFile1.place(x=850, y=90)
+
+        buttonFile2 = Button(text="Load file2", command=lambda: SelectFile1(entreFile2),background='white',width=15,height=1,justify="center")
+        buttonFile2.place(x=850, y=130)
+        
+        buttonFile3 = Button(text="Save As", command=lambda: SelectFile2(entreFile3),background='white',width=15,height=1,justify="center")
+        buttonFile3.place(x=850, y=170)
+
+
+
+        proccessType = ttk.Combobox(values=["Convolution","Smoothing","Correlation","Remove the DC"],width=15,height=20)
+        proccessType.place(x=330, y=212)
+        proccessType.set("Convolution")  # Default to Convolution
+
+        # shiftingValue = Entry(width=10)
+        # shiftingValue.place(x=670, y=310)
+
+        test = Button(text=" Test", width=25, height=2, background="white",command=CompareTask6)
+        test.place(x=1000, y=500)
+        applyProccess = Button(text=" Apply process", width=25, height=2, background="white",command=lambda: ProcessConvolution(entreFile1, entreFile2,entreFile3 ,proccessType))
+        applyProccess.place(x=800,y=500)
 
 
 
     def next(self):
-        if self.page < 6:  
+        if self.page < 7:  
             self.page += 1
             self.create_page()
 

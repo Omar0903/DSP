@@ -288,12 +288,12 @@ def AddFile(file1, file2, outputFile):
 def ChooseFileForAddition():
     file1 = filedialog.askopenfilename(title="Select the first file")
     file2 = filedialog.askopenfilename(title="Select the second file")
-    output_file = filedialog.asksaveasfilename(
+    outputFile = filedialog.asksaveasfilename(
         title="Select output file", defaultextension=".txt"
     )
 
-    if file1 and file2 and output_file:
-        AddFile(file1, file2, output_file)
+    if file1 and file2 and outputFile:
+        AddFile(file1, file2, outputFile)
     else:
         messagebox.showwarning("Warning", "You must select all files.")
 
@@ -343,12 +343,12 @@ def SubtractFile(file1, file2, outputFile):
 def ChooseFileForSubtraction():
     file1 = filedialog.askopenfilename(title="Select the first file")
     file2 = filedialog.askopenfilename(title="Select the second file")
-    output_file = filedialog.asksaveasfilename(
+    outputFile = filedialog.asksaveasfilename(
         title="Select output file", defaultextension=".txt"
     )
 
-    if file1 and file2 and output_file:
-        SubtractFile(file1, file2, output_file)
+    if file1 and file2 and outputFile:
+        SubtractFile(file1, file2, outputFile)
     else:
         messagebox.showwarning("Warning", "You must select all files.")
 
@@ -373,9 +373,9 @@ def Multiplication(constEN):
             index, value = line.split()
             signal_dic[int(index)] = int(value)
         output_signal = {key: value * const for key, value in signal_dic.items()}
-        output_file = filedialog.asksaveasfilename(filetypes=[("Text files", "*.txt")])
-        if output_file:
-            with open(output_file, "w") as out_file:
+        outputFile = filedialog.asksaveasfilename(filetypes=[("Text files", "*.txt")])
+        if outputFile:
+            with open(outputFile, "w") as out_file:
                 out_file.write(f"{signal_type} \n")
                 out_file.write(f"{isPeriodic} \n")
                 out_file.write(f"{sampling_number} \n")
@@ -413,10 +413,10 @@ def Squaring():
 
         output_signal = {key: value * value for key, value in signal_dic.items()}
 
-        output_file = filedialog.asksaveasfilename(filetypes=[("Text files", "*.txt")])
+        outputFile = filedialog.asksaveasfilename(filetypes=[("Text files", "*.txt")])
 
-        if output_file:
-            with open(output_file, "w") as out_file:
+        if outputFile:
+            with open(outputFile, "w") as out_file:
                 out_file.write(f"{signal_type} \n")
                 out_file.write(f"{isPeriodic} \n")
                 out_file.write(f"{sampling_number} \n")
@@ -475,12 +475,12 @@ def Normalization(file1, outputFile, cmbo2):
 
 def ChooseFileForNormalization(cmbo2):
     file1 = filedialog.askopenfilename(title="Select the first file")
-    output_file = filedialog.asksaveasfilename(
+    outputFile = filedialog.asksaveasfilename(
         title="Select output file", defaultextension=".txt"
     )
 
-    if file1 and output_file:
-        Normalization(file1, output_file, cmbo2)
+    if file1 and outputFile:
+        Normalization(file1, outputFile, cmbo2)
     else:
         messagebox.showwarning("Warning", "You must select all files.")
 
@@ -520,12 +520,12 @@ def Accumulation(file1, outputFile):
 
 def ChooseFileForAccumulation():
     file1 = filedialog.askopenfilename(title="Select the first file")
-    output_file = filedialog.asksaveasfilename(
+    outputFile = filedialog.asksaveasfilename(
         title="Select output file", defaultextension=".txt"
     )
 
-    if file1 and output_file:
-        Accumulation(file1, output_file)
+    if file1 and outputFile:
+        Accumulation(file1, outputFile)
     else:
         messagebox.showwarning("Warning", "You must select all files.")
 
@@ -758,9 +758,9 @@ def IDFTConvert(convertComponents):
 # Function to process the files for DFT
 def ProcessFilesForiDFT(entry_file1, entry_file2):
     input_file = entry_file1.get()
-    output_file = entry_file2.get()
+    outputFile = entry_file2.get()
 
-    if not input_file or not output_file:
+    if not input_file or not outputFile:
         return "Please select both input and output files."
 
     # Read frequency components
@@ -776,7 +776,7 @@ def ProcessFilesForiDFT(entry_file1, entry_file2):
     reconstructed_signal = IDFTConvert(convertComponents)
 
     # Write to output file
-    with open(output_file, "w") as out_file:
+    with open(outputFile, "w") as out_file:
         # Write the first three rows (header)
         for line in skippedRows:
             out_file.write(line + "\n")
@@ -888,10 +888,10 @@ def DFT(file_path, output_path, sampling_frequency):
 
 
 # Function to check combo box selection and call appropriate function
-def check_and_process(combo_box, entry_file, entry_output_file, entry_sampling_freq):
+def check_and_process(combo_box, entry_file, entry_outputFile, entry_sampling_freq):
     selected_option = combo_box.get()
     if selected_option == "DFT":
-        output_path = entry_output_file.get()
+        output_path = entry_outputFile.get()
         file_path = entry_file.get()
         sampling_frequency = entry_sampling_freq.get()
         if not sampling_frequency:
@@ -903,7 +903,7 @@ def check_and_process(combo_box, entry_file, entry_output_file, entry_sampling_f
         except ValueError:
             return "Invalid sampling frequency."
     else:
-        result = ProcessFilesForiDFT(entry_file, entry_output_file)
+        result = ProcessFilesForiDFT(entry_file, entry_outputFile)
         return result
 
 
@@ -1089,9 +1089,7 @@ def DCT(input, output, m):
         for k in range(N):
             sum_val = 0
             for n in range(N):
-                sum_val += signal_data[n] * np.cos(
-                    (np.pi / (4 * N)) * (2 * n - 1) * (2 * k - 1)
-                )
+                sum_val += signal_data[n] * np.cos((np.pi / (4 * N)) * (2 * n - 1) * (2 * k - 1)   )
             y[k] = factor * sum_val
         
         with open(output, "w") as outfile:
@@ -1314,3 +1312,86 @@ def CompareTask6():
         ShiftFoldSignal(file2, exceptedIndex, expected_samples)
     else:
         messagebox.showwarning("Warning", "You must select all files.")
+# Task 7
+def GetMinIndex(file1, file2):
+    # Load data from both files (skip the first 3 rows)
+    data1 = np.loadtxt(file1, skiprows=3)
+    data2 = np.loadtxt(file2, skiprows=3)
+    
+    # Extract indices from the first column
+    indices1 = data1[:, 0]
+    indices2 = data2[:, 0]
+    
+    # Return the minimum index from both files
+    return min(min(indices1), min(indices2))
+
+def Convolve(x, h, min_index):
+    # Perform manual convolution
+    
+    # Ensure n_min and n_max are integers
+    n_min = min(range(len(x))) + min(range(len(h)))
+    n_max = max(range(len(x))) + max(range(len(h)))
+
+    y = []
+    for n in range(n_min, n_max + 1):
+        sum_val = 0
+        for k in range(len(x)):
+            if 0 <= n - k < len(h):  # Ensure indices are within bounds of h
+                sum_val += x[k] * h[n - k]
+        
+        result_index =  min_index + n  # Adjust result index relative to min_index
+        y.append((int(result_index), int(sum_val)))  # Store adjusted index-value pair
+    
+    return y
+
+
+def ProcessConvolution(input1, input2, output, cmbo):
+    if cmbo.get() == "Convolution":
+        file1 = input1.get()
+        file2 = input2.get()
+        outputFile = output.get()  # Output file
+        
+        # Read the first three rows as comments
+        with open(file1, "r") as f:
+            first_three_rows_file1 = [next(f).strip() for _ in range(3)]
+
+        with open(file2, "r") as f:
+            first_three_rows_file2 = [next(f).strip() for _ in range(3)]
+
+        # Load signals (skip the first 3 rows and extract values only)
+        data1 = np.loadtxt(file1, skiprows=3)
+        data2 = np.loadtxt(file2, skiprows=3)
+        
+        # Extract indices and signal values (assuming two columns: index and value)
+        indices1 = data1[:, 0]  # Extract indices from first column
+        signal1Values = data1[:, 1]  # Extract signal values from second column
+        
+        indices2 = data2[:, 0]  # Extract indices from first column
+        signal2Values = data2[:, 1]  # Extract signal values from second column
+        
+        # Get minimum index from both files
+        minIndex = GetMinIndex(file1, file2)
+        
+        # Perform the convolution
+        convolvedSignal = Convolve(signal1Values, signal2Values, minIndex)
+        
+        # Get the length of the convolved signal
+        outputLength = len(convolvedSignal)
+
+        # Save the result to the output file
+        with open(outputFile, "w") as f:
+            # Write the first 3 rows, which contain only one value per row (from the input files)
+            f.write(f"0\n")
+            f.write(f"0\n")
+            f.write(f"{outputLength}\n")
+            
+            # Write the convolved signal (index-value pairs)
+            for index, value in convolvedSignal:
+                f.write(f"{index} {value}\n")
+        
+        messagebox.showinfo("Successful", "Convolution done successfully!")
+    else:
+        print("Not implemented yet")
+
+
+
