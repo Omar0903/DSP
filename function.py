@@ -757,14 +757,14 @@ def IDFTConvert(convertComponents):
 
 # Function to process the files for DFT
 def ProcessFilesForiDFT(entry_file1, entry_file2):
-    input_file = entry_file1.get()
+    inputFile = entry_file1.get()
     outputFile = entry_file2.get()
 
-    if not input_file or not outputFile:
+    if not inputFile or not outputFile:
         return "Please select both input and output files."
 
     # Read frequency components
-    skippedRows, frequencyComponents = ReadFrequencyComponents(input_file)
+    skippedRows, frequencyComponents = ReadFrequencyComponents(inputFile)
 
     if frequencyComponents is None:
         return "Error reading frequency components."
@@ -817,23 +817,23 @@ def DFT(file_path, output_path, sampling_frequency):
                     time, amplitude = map(float, parts)
                     data.append(amplitude)
 
-        signal_data = np.array(data)
-        N = len(signal_data)
+        signalData = np.array(data)
+        N = len(signalData)
 
-        frequency_components = []
+        frequencyComponents = []
         for k in range(N):
-            real_sum = 0
-            imag_sum = 0
+            realSum = 0
+            imagSum = 0
             for n in range(N):
                 angle = -2 * np.pi * k * n / N
-                real_sum += signal_data[n] * np.cos(angle)
-                imag_sum += signal_data[n] * np.sin(angle)
-            frequency_components.append(complex(real_sum, imag_sum))
+                realSum += signalData[n] * np.cos(angle)
+                imagSum += signalData[n] * np.sin(angle)
+            frequencyComponents.append(complex(realSum, imagSum))
 
         # All N frequencies
         frequencies = np.arange(N) * (sampling_frequency / N)
-        amplitudes = np.abs(frequency_components)
-        phases = np.angle(frequency_components)
+        amplitudes = np.abs(frequencyComponents)
+        phases = np.angle(frequencyComponents)
         theta = (2 * 3.14) / (N * (1 / sampling_frequency))
 
         # Plotting frequency vs amplitude and frequency vs phase
@@ -1081,15 +1081,15 @@ def DCT(input, output, m):
                     time, amplitude = map(float, parts)
                     data.append(amplitude)
 
-        signal_data = np.array(data)
-        N = len(signal_data)
+        signalData = np.array(data)
+        N = len(signalData)
         y = np.zeros(N)
         factor = np.sqrt(2 / N)
 
         for k in range(N):
             sum_val = 0
             for n in range(N):
-                sum_val += signal_data[n] * np.cos((np.pi / (4 * N)) * (2 * n - 1) * (2 * k - 1)   )
+                sum_val += signalData[n] * np.cos((np.pi / (4 * N)) * (2 * n - 1) * (2 * k - 1)   )
             y[k] = factor * sum_val
         
         with open(output, "w") as outfile:
@@ -1364,6 +1364,62 @@ def MovingAverage(filePath ,windowSize):
     for i in range(len(result)):
         result[i] = np.sum(samples[i:i+windowSize]) / windowSize
     return result
+def RemoveDcInFrequencyDomain(inputFile, outputFile):
+    try:
+        # Step 1: Read input file
+        with open(inputFile, "r") as file:
+            lines = file.readlines()
+            data = []
+            skippedRows = lines[:3]  # Save the first 3 header lines
+            for line in lines[3:]:
+                parts = line.strip().split()
+                if len(parts) == 2:
+                    time, amplitude = map(float, parts)
+                    data.append(amplitude)
+
+        signalData = np.array(data)
+        N = len(signalData)
+        frequencyComponents = []
+
+        # Step 2: Perform DFT
+        for k in range(N):
+            realSum = 0
+            imagSum = 0
+            for n in range(N):
+                angle = -2 * np.pi * k * n / N
+                realSum += signalData[n] * np.cos(angle)
+                imagSum += signalData[n] * np.sin(angle)
+            frequencyComponents.append(complex(realSum, imagSum))
+
+        # Step 3: Modify the first frequency component
+        frequencyComponents[0] = 0  # Set both real and imaginary parts to 0
+
+        # Step 4: Perform IDFT
+        timeSignal = np.zeros(N, dtype=complex)
+        for n in range(N):
+            for k in range(N):
+                timeSignal[n] += frequencyComponents[k] * np.exp(1j * (2 * np.pi / N) * k * n)
+        timeSignal /= N  # Normalize
+
+        # Step 5: Save the reconstructed signal to the output file
+        with open(outputFile, "w") as out_file:
+            # Write the header lines
+            for line in skippedRows:
+                out_file.write(line)
+
+            # Write the reconstructed signal
+            for index, value in enumerate(timeSignal):
+                real_part = value.real
+                imag_part = value.imag
+                magnitude = np.sqrt(real_part**2 + imag_part**2)
+                # Negate magnitude if imaginary part is negative
+                if real_part < 0:
+                    magnitude = -magnitude
+                out_file.write(f"{index} {magnitude:.3f}\n")  # Format magnitude to 3 decimal places
+
+        # return "Processing complete. Output saved."
+    except Exception as e:
+        return f"An error occurred: {e}"
 
 def ProcessConvolution(input1, input2, output, cmbo,value):
     file1 = input1.get()
@@ -1424,6 +1480,12 @@ def ProcessConvolution(input1, input2, output, cmbo,value):
             messagebox.showinfo("Successful", "Convolution done successfully!")
         except Exception as e:
             print(f"Error saving the file: {e}")
+    elif cmbo.get()== "Remove the DC":
+        RemoveDcInFrequencyDomain(file1, outputFile)
+        messagebox.showinfo("Successful", "Remove the DC done successfully!")
+    else:
+        messagebox.showerror("Error", "Not implemented yet!")
+
 
 
 
