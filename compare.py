@@ -2,6 +2,8 @@
 from tkinter import *
 from tkinter import messagebox
 import math
+from tkinter import filedialog, messagebox
+
 
 
 
@@ -272,3 +274,50 @@ def ShiftFoldSignal(fileName,OutputInices,OutputSamples):
             messagebox.showinfo("Error","ShiftFoldSignal Test case failed, your signal have different values from the expected one") 
             return
     messagebox.showinfo("Successful","ShiftFoldSignal Test case passed successfully")
+def GeneralCompare(testname):
+    file1 = filedialog.askopenfilename(title="Select the first file")
+    file2 = filedialog.askopenfilename(title="Select the second file")
+    testName = str(testname.get()) 
+
+    if file1 and file2:
+        samplesfile1 = []
+        indexfile1 = []
+        samplesfile2 = []
+        indexfile2 = []
+
+        # Read first file
+        with open(file1, "r") as f:
+            for _ in range(3):
+                f.readline()  # Skip first three lines
+            for line in f:
+                L = line.strip().replace("f", "")  # Remove 'f' before processing
+                if len(L.split()) == 2:
+                    V1, V2 = map(float, L.split())
+                    indexfile1.append(V1)
+                    samplesfile1.append(V2)
+
+        # Read second file
+        with open(file2, "r") as f:
+            for _ in range(3):
+                f.readline()  # Skip first three lines
+            for line in f:
+                L = line.strip().replace("f", "")  # Remove 'f' before processing
+                if len(L.split()) == 2:
+                    V1, V2 = map(float, L.split())
+                    indexfile2.append(V1)
+                    samplesfile2.append(V2)
+
+        # Check for length mismatch
+        if len(samplesfile1) != len(samplesfile2) or len(indexfile1) != len(indexfile2):
+            messagebox.showerror(  "Error",testName+" Test case failed: The signals have different lengths.")
+            return
+        # Compare samples and indices
+        for i in range(len(samplesfile1)):
+            if abs(samplesfile1[i] - samplesfile2[i]) >= 0.01:
+                messagebox.showerror("Error",testName+f" Test case failed: Signal values differ at index {i}." )
+                return
+            if abs(indexfile1[i] - indexfile2[i]) >= 0.01:
+                messagebox.showerror("Error",testName+f" Test case failed: Signal indices differ at index {i}.")
+                return
+        # If all checks pass
+        messagebox.showinfo("Success", testName +" Test case passed successfully!")

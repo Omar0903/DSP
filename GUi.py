@@ -2,7 +2,8 @@
 import tkinter as tk
 from tkinter import *
 from tkinter import ttk
-from test import *
+from function import *
+from test3 import *
 import cv2
 
 class App:
@@ -275,7 +276,7 @@ class App:
         shiftingValue = Entry(width=10)
         shiftingValue.place(x=670, y=310)
 
-        test = Button(text=" Test", width=25, height=2, background="white",command=CompareTask6)
+        test = Button(text=" Test", width=25, height=2, background="white",command=lambda: GeneralCompare(proccessType))
         test.place(x=900, y=500)
         applyProccess = Button(text=" Apply process", width=11, background="white",
                     command=lambda: ChooseProccess(entreFile1, entreFile2, proccessType, shiftingValue))
@@ -313,16 +314,10 @@ class App:
         labal6.place(x=100, y=250)
         entre4 = Entry(fg='black',bg='white',font= 15,justify="center",width=10)
         entre4.place(x=250, y=250)
-
-
         proccessType = ttk.Combobox(values=["Convolution","Smoothing","Correlation","Remove the DC"],width=15,height=20)
         proccessType.place(x=330, y=212)
         proccessType.set("Convolution")  # Default to Convolution
-
-        # shiftingValue = Entry(width=10)
-        # shiftingValue.place(x=670, y=310)
-
-        test = Button(text=" Test", width=25, height=2, background="white",command=CompareTask6)
+        test = Button(text=" Test", width=25, height=2, background="white",command=lambda:GeneralCompare(proccessType))
         test.place(x=1000, y=500)
         applyProccess = Button(text=" Apply process", width=25, height=2, background="white",command=lambda: ProcessConvolution(entreFile1, entreFile2,entreFile3 ,proccessType,entre4))
         applyProccess.place(x=800,y=500)

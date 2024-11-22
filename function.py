@@ -1364,62 +1364,6 @@ def MovingAverage(filePath ,windowSize):
     for i in range(len(result)):
         result[i] = np.sum(samples[i:i+windowSize]) / windowSize
     return result
-def RemoveDcInFrequencyDomain(inputFile, outputFile):
-    try:
-        # Step 1: Read input file
-        with open(inputFile, "r") as file:
-            lines = file.readlines()
-            data = []
-            skippedRows = lines[:3]  # Save the first 3 header lines
-            for line in lines[3:]:
-                parts = line.strip().split()
-                if len(parts) == 2:
-                    time, amplitude = map(float, parts)
-                    data.append(amplitude)
-
-        signalData = np.array(data)
-        N = len(signalData)
-        frequencyComponents = []
-
-        # Step 2: Perform DFT
-        for k in range(N):
-            realSum = 0
-            imagSum = 0
-            for n in range(N):
-                angle = -2 * np.pi * k * n / N
-                realSum += signalData[n] * np.cos(angle)
-                imagSum += signalData[n] * np.sin(angle)
-            frequencyComponents.append(complex(realSum, imagSum))
-
-        # Step 3: Modify the first frequency component
-        frequencyComponents[0] = 0  # Set both real and imaginary parts to 0
-
-        # Step 4: Perform IDFT
-        timeSignal = np.zeros(N, dtype=complex)
-        for n in range(N):
-            for k in range(N):
-                timeSignal[n] += frequencyComponents[k] * np.exp(1j * (2 * np.pi / N) * k * n)
-        timeSignal /= N  # Normalize
-
-        # Step 5: Save the reconstructed signal to the output file
-        with open(outputFile, "w") as out_file:
-            # Write the header lines
-            for line in skippedRows:
-                out_file.write(line)
-
-            # Write the reconstructed signal
-            for index, value in enumerate(timeSignal):
-                real_part = value.real
-                imag_part = value.imag
-                magnitude = np.sqrt(real_part**2 + imag_part**2)
-                # Negate magnitude if imaginary part is negative
-                if real_part < 0:
-                    magnitude = -magnitude
-                out_file.write(f"{index} {magnitude:.3f}\n")  # Format magnitude to 3 decimal places
-
-        # return "Processing complete. Output saved."
-    except Exception as e:
-        return f"An error occurred: {e}"
 
 def ProcessConvolution(input1, input2, output, cmbo,value):
     file1 = input1.get()
@@ -1483,9 +1427,62 @@ def ProcessConvolution(input1, input2, output, cmbo,value):
     elif cmbo.get()== "Remove the DC":
         RemoveDcInFrequencyDomain(file1, outputFile)
         messagebox.showinfo("Successful", "Remove the DC done successfully!")
-    else:
-        messagebox.showerror("Error", "Not implemented yet!")
+def RemoveDcInFrequencyDomain(inputFile, outputFile):
+    try:
+        # Step 1: Read input file
+        with open(inputFile, "r") as file:
+            lines = file.readlines()
+            data = []
+            skippedRows = lines[:3]  # Save the first 3 header lines
+            for line in lines[3:]:
+                parts = line.strip().split()
+                if len(parts) == 2:
+                    time, amplitude = map(float, parts)
+                    data.append(amplitude)
 
+        signalData = np.array(data)
+        N = len(signalData)
+        frequencyComponents = []
+
+        # Step 2: Perform DFT
+        for k in range(N):
+            realSum = 0
+            imagSum = 0
+            for n in range(N):
+                angle = -2 * np.pi * k * n / N
+                realSum += signalData[n] * np.cos(angle)
+                imagSum += signalData[n] * np.sin(angle)
+            frequencyComponents.append(complex(realSum, imagSum))
+
+        # Step 3: Modify the first frequency component
+        frequencyComponents[0] = 0  # Set both real and imaginary parts to 0
+
+        # Step 4: Perform IDFT
+        timeSignal = np.zeros(N, dtype=complex)
+        for n in range(N):
+            for k in range(N):
+                timeSignal[n] += frequencyComponents[k] * np.exp(1j * (2 * np.pi / N) * k * n)
+        timeSignal /= N  # Normalize
+
+        # Step 5: Save the reconstructed signal to the output file
+        with open(outputFile, "w") as out_file:
+            # Write the header lines
+            for line in skippedRows:
+                out_file.write(line)
+
+            # Write the reconstructed signal
+            for index, value in enumerate(timeSignal):
+                real_part = value.real
+                imag_part = value.imag
+                magnitude = np.sqrt(real_part**2 + imag_part**2)
+                # Negate magnitude if imaginary part is negative
+                if real_part < 0:
+                    magnitude = -magnitude
+                out_file.write(f"{index} {magnitude:.3f}\n")  # Format magnitude to 3 decimal places
+
+        # return "Processing complete. Output saved."
+    except Exception as e:
+        return f"An error occurred: {e}"
 
 
 
