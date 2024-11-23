@@ -1421,7 +1421,7 @@ def ProcessConvolution(input1, input2, output, cmbo,value):
                 file.write(f"{outputLength}\n")
                 for i in range( len(y)):  
                         file.write(f"{i} {y[i]:.6f}\n")     
-            messagebox.showinfo("Successful", "Convolution done successfully!")
+            messagebox.showinfo("Successful", "Smoothing done successfully!")
         except Exception as e:
             print(f"Error saving the file: {e}")
     elif cmbo.get()== "Remove the DC":
