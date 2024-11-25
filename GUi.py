@@ -2,9 +2,7 @@
 import tkinter as tk
 from tkinter import *
 from tkinter import ttk
-from function import *
-from test3 import *
-import cv2
+from test import *
 
 class App:
     def __init__(self, master):

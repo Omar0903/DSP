@@ -1365,68 +1365,8 @@ def MovingAverage(filePath ,windowSize):
         result[i] = np.sum(samples[i:i+windowSize]) / windowSize
     return result
 
-def ProcessConvolution(input1, input2, output, cmbo,value):
-    file1 = input1.get()
-    file2 = input2.get()
-    outputFile = output.get()  
-    if cmbo.get() == "Convolution":        
-        # Read the first three rows as comments
-        with open(file1, "r") as f:
-            first_three_rows_file1 = [next(f).strip() for _ in range(3)]
 
-        with open(file2, "r") as f:
-            first_three_rows_file2 = [next(f).strip() for _ in range(3)]
-
-        # Load signals (skip the first 3 rows and extract values only)
-        data1 = np.loadtxt(file1, skiprows=3)
-        data2 = np.loadtxt(file2, skiprows=3)
         
-        # Extract indices and signal values (assuming two columns: index and value)
-        indices1 = data1[:, 0]  # Extract indices from first column
-        signal1Values = data1[:, 1]  # Extract signal values from second column
-        
-        indices2 = data2[:, 0]  # Extract indices from first column
-        signal2Values = data2[:, 1]  # Extract signal values from second column
-        
-        # Get minimum index from both files
-        minIndex = GetMinIndex(file1, file2)
-        
-        # Perform the convolution
-        convolvedSignal = Convolve(signal1Values, signal2Values, minIndex)
-        
-        # Get the length of the convolved signal
-        outputLength = len(convolvedSignal)
-
-        # Save the result to the output file
-        with open(outputFile, "w") as f:
-            # Write the first 3 rows, which contain only one value per row (from the input files)
-            f.write(f"0\n")
-            f.write(f"0\n")
-            f.write(f"{outputLength}\n")
-            
-            # Write the convolved signal (index-value pairs)
-            for index, value in convolvedSignal:
-                f.write(f"{index} {value}\n")
-        
-        messagebox.showinfo("Successful", "Convolution done successfully!")
-    elif cmbo.get()== "Smoothing":
-        windowSize = int(value.get())
-        y = MovingAverage(file1, windowSize)
-        outputLength = len(y)
-        try:
-        # Open the file in write mode
-            with open(outputFile, 'w') as file:
-                file.write(f"0\n")
-                file.write(f"0\n")
-                file.write(f"{outputLength}\n")
-                for i in range( len(y)):  
-                        file.write(f"{i} {y[i]:.6f}\n")     
-            messagebox.showinfo("Successful", "Smoothing done successfully!")
-        except Exception as e:
-            print(f"Error saving the file: {e}")
-    elif cmbo.get()== "Remove the DC":
-        RemoveDcInFrequencyDomain(file1, outputFile)
-        messagebox.showinfo("Successful", "Remove the DC done successfully!")
 def RemoveDcInFrequencyDomain(inputFile, outputFile):
     try:
         # Step 1: Read input file
@@ -1483,6 +1423,193 @@ def RemoveDcInFrequencyDomain(inputFile, outputFile):
         # return "Processing complete. Output saved."
     except Exception as e:
         return f"An error occurred: {e}"
+def RemoveDcInTimeDomain(inputFile, outputFile):
+    try:
+        expected_indices = []
+        expected_samples = []
+        skippedRows = []
+        
+        # Reading the input file and extracting the necessary information
+        with open(inputFile, 'r') as f:
+            for i in range(3):  # Read first 3 header lines
+                line = f.readline().strip()
+                skippedRows.append(line)  # Add the header to the skippedRows
+            for line in f:  # Read the actual signal data
+                L = line.strip()
+                if len(L.split()) == 2:
+                    L = L.split()
+                    V1 = int(L[0])  # The index value
+                    V2 = float(L[1])  # The sample value
+                    expected_indices.append(V1)
+                    expected_samples.append(V2)
+                else:
+                    break
+        
+        # Calculate the mean of the samples
+        mean = np.mean(expected_samples)
+        N = len(expected_samples)
+        
+        # Remove DC component by subtracting the mean from each sample
+        expected_samples = [sample - mean for sample in expected_samples]
+        
+        # Saving the modified signal to the output file
+        with open(outputFile, "w") as out_file:
+            # Write the header lines
+            for line in skippedRows:
+                out_file.write(line + "\n")
+
+            # Write the modified signal (after removing the DC component)
+            for index, sample in zip(expected_indices, expected_samples):
+                out_file.write(f"{index} {sample:.3f}\n")  # Format the sample value to 3 decimal places
+        
+        return "Processing complete. Output saved."
+    
+    except Exception as e:
+        return f"An error occurred: {e}"
+    
+def Correlation(input1,input2,output):
+
+    r1 = []
+    r2 = []
+    shifted_r2 = []
+
+    try:
+        
+        with open(input1, "r") as file1:
+            lines = file1.readlines()
+            
+            skippedRows = lines[:3]  # Save the first 3 header lines
+            for line in lines[3:]:
+                parts = line.strip().split()
+                if len(parts) == 2:
+                    index1, amplitude = map(float, parts)
+                    r1.append(amplitude)  
+            
+        with open(input2, "r") as file2:
+            lines = file2.readlines()
+            
+            
+            for line in lines[3:]:
+                parts = line.strip().split()
+                if len(parts) == 2:
+                    index2, amplitude = map(float, parts)
+                    r2.append(amplitude) 
+            
+
+        N = len(r1)  # Length of the signals
+        r12 = []  # To store raw cross-correlation values
+        P12 = []  # To store normalized cross-correlation values
+
+        # Compute power (sum of squares) of r1 and X2
+        power_r1 = sum(x**2 for x in r1)
+        power_r2 = sum(x**2 for x in r2)
+
+        # Loop over shifts (j)
+        for j in range(N):
+            # Perform cyclic shift on r2
+            shifted_r2 = r2[j:] + r2[:j]
+
+            # Compute r12(j)
+            r12_j = sum(r1[n] * shifted_r2[n] for n in range(N)) / N
+            r12.append(r12_j)
+
+            # Compute normalized P12(j)
+            P12_j = r12_j / ((power_r1 / N)**0.5 * (power_r2 / N)**0.5)
+            P12.append(P12_j)
+        
+        with open(output,"w") as out:
+            for line in skippedRows:
+                out.write(line)
+            
+            for index1,value in enumerate(P12):
+                out.write(f"{index1} {value:.8f}\n")
+                
+
+        messagebox.showinfo("Successful", "Correlation done successfully!")
+
+
+    except Exception as e:
+        return f"An error occurred: {e}"
+def ProcessConvolution(input1, input2, output, cmbo,value):
+    file1 = input1.get()
+    file2 = input2.get()
+    outputFile = output.get()  
+    if cmbo.get() == "Convolution":        
+            # Read the first three rows as comments
+        with open(file1, "r") as f:
+            first_three_rows_file1 = [next(f).strip() for _ in range(3)]
+
+        with open(file2, "r") as f:
+            first_three_rows_file2 = [next(f).strip() for _ in range(3)]
+
+        # Load signals (skip the first 3 rows and extract values only)
+        data1 = np.loadtxt(file1, skiprows=3)
+        data2 = np.loadtxt(file2, skiprows=3)
+        
+        # Extract indices and signal values (assuming two columns: index and value)
+        indices1 = data1[:, 0]  # Extract indices from first column
+        signal1Values = data1[:, 1]  # Extract signal values from second column
+        
+        indices2 = data2[:, 0]  # Extract indices from first column
+        signal2Values = data2[:, 1]  # Extract signal values from second column
+        
+        # Get minimum index from both files
+        minIndex = GetMinIndex(file1, file2)
+        
+        # Perform the convolution
+        convolvedSignal = Convolve(signal1Values, signal2Values, minIndex)
+        
+        # Get the length of the convolved signal
+        outputLength = len(convolvedSignal)
+
+        # Save the result to the output file
+        with open(outputFile, "w") as f:
+            # Write the first 3 rows, which contain only one value per row (from the input files)
+            f.write(f"0\n")
+            f.write(f"0\n")
+            f.write(f"{outputLength}\n")
+            
+            # Write the convolved signal (index-value pairs)
+            for index, value in convolvedSignal:
+                f.write(f"{index} {value}\n")
+        
+        messagebox.showinfo("Successful", "Convolution done successfully!")
+    elif cmbo.get()== "Smoothing":
+        windowSize = int(value.get())
+        y = MovingAverage(file1, windowSize)
+        outputLength = len(y)
+        try:
+        # Open the file in write mode
+            with open(outputFile, 'w') as file:
+                file.write(f"0\n")
+                file.write(f"0\n")
+                file.write(f"{outputLength}\n")
+                for i in range( len(y)):  
+                        file.write(f"{i} {y[i]:.6f}\n")     
+            messagebox.showinfo("Successful", "Smoothing done successfully!")
+        except Exception as e:
+            print(f"Error saving the file: {e}")
+    elif cmbo.get() == "Remove the DC":
+        # Open the file and read the first line
+        with open(file1, "r") as f:
+            first_line = f.readline().strip()  # Read and strip the first line
+        
+        # Check the value of the first line and call the appropriate function
+        if first_line == "0":
+            RemoveDcInTimeDomain(file1, outputFile)
+            messagebox.showinfo("Successful", "DC removed using time domain method!")
+        elif first_line == "1":
+            RemoveDcInFrequencyDomain(file1, outputFile)
+            messagebox.showinfo("Successful", "DC removed using frequency domain method!")
+        else:
+            messagebox.showerror("Error", "Invalid file format. The first line must be 0 or 1.")
+
+    elif cmbo.get()== "Correlation":
+        Correlation(file1,file2,outputFile)
+    else:
+        messagebox.showerror("Error", "Invalid choice")
+
+
 
 
 
