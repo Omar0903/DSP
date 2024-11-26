@@ -1106,7 +1106,6 @@ def DCT(input, output, m):
         return f"An error occurred: {e}"
 
 
-
 def chooseoperation(inputFile, outputFile, cmbo,m):
     if cmbo.get() == "Sharpening":
         sharpening(inputFile, outputFile)
