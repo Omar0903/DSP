@@ -1106,6 +1106,7 @@ def DCT(input, output, m):
         return f"An error occurred: {e}"
 
 
+
 def chooseoperation(inputFile, outputFile, cmbo,m):
     if cmbo.get() == "Sharpening":
         sharpening(inputFile, outputFile)
@@ -1447,6 +1448,7 @@ def RemoveDcInTimeDomain(inputFile, outputFile):
         # Calculate the mean of the samples
         mean = np.mean(expected_samples)
         N = len(expected_samples)
+        print("Mean is ", mean)
         
         # Remove DC component by subtracting the mean from each sample
         expected_samples = [sample - mean for sample in expected_samples]
