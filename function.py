@@ -1654,7 +1654,7 @@ def DesignFIRFilter(SamplingFrequency, CutOfFrequency1, CutOfFrequency2,StopAtte
                         File.write(f"{Index} {Value:.5E}\n")
                     else:
                         File.write(f"{Index} {Value:.10f}\n")
-            print("Filter test case 1 done successfully")
+            messagebox.showinfo("Successful","Filter test case 1 done successfully")
             return Coefficients
         elif StopAttenuation <= 44:
             N = 3.1 / NewTransitionBand
@@ -1716,7 +1716,7 @@ def DesignFIRFilter(SamplingFrequency, CutOfFrequency1, CutOfFrequency2,StopAtte
                         File.write(f"{Index} {Value:.5E}\n")
                     else:
                         File.write(f"{Index} {Value:.10f}\n")
-            print("Filter test case 1 done successfully")
+            messagebox.showinfo("Successful","Filter test case 1 done successfully")
             return Coefficients
         elif StopAttenuation <= 74:
             N = 5.5 / NewTransitionBand
@@ -1748,7 +1748,7 @@ def DesignFIRFilter(SamplingFrequency, CutOfFrequency1, CutOfFrequency2,StopAtte
                         File.write(f"{Index} {Value:.5E}\n")
                     else:
                         File.write(f"{Index} {Value:.10f}\n")
-            print("Filter test case 1 done successfully")
+            messagebox.showinfo("Successful","Filter test case 1 done successfully")
             return Coefficients
     elif FilterType == 'Highpass':
         NewCutOfFrequency1 = (CutOfFrequency1 - (TransitionBand / 2)) / SamplingFrequency
@@ -1783,7 +1783,7 @@ def DesignFIRFilter(SamplingFrequency, CutOfFrequency1, CutOfFrequency2,StopAtte
                         File.write(f"{Index} {Value:.5E}\n")
                     else:
                         File.write(f"{Index} {Value:.8f}\n")
-            print("Filter test case 3 done successfully")
+            messagebox.showinfo("Successful","Filter test case 3 done successfully")
             return Coefficients
 
         elif StopAttenuation <= 44:
@@ -1813,7 +1813,7 @@ def DesignFIRFilter(SamplingFrequency, CutOfFrequency1, CutOfFrequency2,StopAtte
                         File.write(f"{Index}\t{Value:.5E}\n")
                     else:
                         File.write(f"{Index}\t{Value:.10f}\n")
-            print("Filter test case 3 done successfully")
+            messagebox.showinfo("Successful","Filter test case 3 done successfully")
             return Coefficients
 
         elif StopAttenuation <= 53:
@@ -1846,7 +1846,7 @@ def DesignFIRFilter(SamplingFrequency, CutOfFrequency1, CutOfFrequency2,StopAtte
                         File.write(f"{Index} {Value:.5E}\n")
                     else:
                         File.write(f"{Index} {Value:.8f}\n")
-            print("Filter test case 3 done successfully")
+            messagebox.showinfo("Successful","Filter test case 3 done successfully")
             return Coefficients
 
         elif StopAttenuation <= 74:
@@ -1879,7 +1879,7 @@ def DesignFIRFilter(SamplingFrequency, CutOfFrequency1, CutOfFrequency2,StopAtte
                         File.write(f"{Index} {Value:.5E}\n")
                     else:
                         File.write(f"{Index} {Value:.10f}\n")
-            print("Filter test case 3 done successfully")
+            messagebox.showinfo("Successful","Filter test case 3 done successfully")
             return Coefficients
     elif FilterType == 'Bandpass':
         NewCutOfFrequency1 = (CutOfFrequency1 - (TransitionBand / 2)) / SamplingFrequency
@@ -1915,7 +1915,7 @@ def DesignFIRFilter(SamplingFrequency, CutOfFrequency1, CutOfFrequency2,StopAtte
                         File.write(f"{I} {Value:.5E}\n")
                     else:
                         File.write(f"{I} {Value:.8f}\n")
-            print("Filter test case 7 done successfully")
+            messagebox.showinfo("Successful","Filter test case 7 done successfully")
             return Coefficients
 
         elif StopAttenuation <= 44:
@@ -1945,7 +1945,7 @@ def DesignFIRFilter(SamplingFrequency, CutOfFrequency1, CutOfFrequency2,StopAtte
                         File.write(f"{I}\t{Value:.5E}\n")
                     else:
                         File.write(f"{I}\t{Value:.10f}\n")
-            print("Filter test case 5 done successfully")
+            messagebox.showinfo("Successful","Filter test case 5 done successfully")
             return Coefficients
 
         elif StopAttenuation <= 53:
@@ -1978,7 +1978,7 @@ def DesignFIRFilter(SamplingFrequency, CutOfFrequency1, CutOfFrequency2,StopAtte
                         File.write(f"{I} {Value:.5E}\n")
                     else:
                         File.write(f"{I} {Value:.8f}\n")
-            print("Filter test case 7 done successfully")
+            messagebox.showinfo("Successful","Filter test case 7 done successfully")
             return Coefficients
 
         elif StopAttenuation <= 74:
@@ -2017,7 +2017,7 @@ def DesignFIRFilter(SamplingFrequency, CutOfFrequency1, CutOfFrequency2,StopAtte
                         File.write(f"{I} {Value:.5E}\n")
                     else:
                         File.write(f"{I} {Value:.10f}\n")
-            print("Filter test case 5 done successfully")
+            messagebox.showinfo("Successful","Filter test case 5 done successfully")
             return Coefficients
     elif FilterType == 'Bandstop':
         NewCutOfFrequency1 = (CutOfFrequency1 + (TransitionBand / 2)) / SamplingFrequency
@@ -2053,7 +2053,7 @@ def DesignFIRFilter(SamplingFrequency, CutOfFrequency1, CutOfFrequency2,StopAtte
                         File.write(f"{I} {Value:.5E}\n")
                     else:
                         File.write(f"{I} {Value:.8f}\n")
-            print("Filter test case 7 done successfully")
+            messagebox.showinfo("Successful","Filter test case 7 done successfully")
             return Coefficients
 
         elif StopAttenuation <= 44:
@@ -2082,7 +2082,7 @@ def DesignFIRFilter(SamplingFrequency, CutOfFrequency1, CutOfFrequency2,StopAtte
                         File.write(f"{I}\t{Value:.5E}\n")
                     else:
                         File.write(f"{I}\t{Value:.10f}\n")
-            print("Filter test case 7 done successfully")
+            messagebox.showinfo("Successful","Filter test case 7 done successfully")
             return Coefficients
 
         elif StopAttenuation <= 53:
@@ -2115,7 +2115,7 @@ def DesignFIRFilter(SamplingFrequency, CutOfFrequency1, CutOfFrequency2,StopAtte
                         File.write(f"{I} {Value:.5E}\n")
                     else:
                         File.write(f"{I} {Value:.8f}\n")
-            print("Filter test case 7 done successfully")
+            messagebox.showinfo("Successful","Filter test case 7 done successfully")
             return Coefficients
 
         elif StopAttenuation <= 74:
@@ -2154,7 +2154,7 @@ def DesignFIRFilter(SamplingFrequency, CutOfFrequency1, CutOfFrequency2,StopAtte
                         File.write(f"{I} {Value:.5E}\n")
                     else:
                         File.write(f"{I} {Value:.10f}\n")
-            print("Filter test case 7 done successfully")
+            messagebox.showinfo("Successful","Filter test case 7 done successfully")
             return Coefficients
 
     return np.array([])
