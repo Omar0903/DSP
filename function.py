@@ -1609,8 +1609,625 @@ def ProcessConvolution(input1, input2, output, cmbo,value):
         Correlation(file1,file2,outputFile)
     else:
         messagebox.showerror("Error", "Invalid choice")
+# task 8
+
+
+
+def DesignFIRFilter(SamplingFrequency, CutOfFrequency1, CutOfFrequency2,StopAttenuation, TransitionBand, FilterType):
+    SamplingFrequency = int(SamplingFrequency.get())
+    FilterType = FilterType.get()
+    CutOfFrequency1 = int(CutOfFrequency1.get())
+    CutOfFrequency2 = int(CutOfFrequency2.get())
+    StopAttenuation = int(StopAttenuation.get())
+    TransitionBand = int(TransitionBand.get())
+    
+    if FilterType == 'Lowpass':
+        NewCutOfFrequency1 = (CutOfFrequency1 + (TransitionBand / 2)) / SamplingFrequency
+        NewTransitionBand = TransitionBand / SamplingFrequency
+        if StopAttenuation <= 21:
+            N = 0.9 / NewTransitionBand
+            N = int(np.ceil(N)) if int(np.ceil(N)) % 2 == 1 else int(np.ceil(N)) + 1
+            H = np.zeros(N)
+            W = np.ones(N)
+
+            for I in range(N-1):
+                W[I] = 1
+                if I == 0:
+                    H[I] = 2 * NewCutOfFrequency1
+                else:
+                    H[I] = 2 * NewCutOfFrequency1 * np.sin(2 * np.pi * NewCutOfFrequency1 * I) / (2 * np.pi * NewCutOfFrequency1 * I)
+                H[I] *= W[I]
+
+            Coefficients = np.zeros(N)
+            for I in range(N):
+                Coefficients[I] = H[I]
+
+            with open("Case1.txt", "w") as File:
+                File.write(f"0\n")
+                File.write(f"0\n")
+                File.write(f"{N}\n")
+                for I in range(-(N//2), (N//2)+1):
+                    Index = I
+                    Value = Coefficients[abs(I)]
+                    
+                    if abs(Value) < 1e-17:
+                        File.write(f"{Index} {Value:.5E}\n")
+                    else:
+                        File.write(f"{Index} {Value:.10f}\n")
+            print("Filter test case 1 done successfully")
+            return Coefficients
+        elif StopAttenuation <= 44:
+            N = 3.1 / NewTransitionBand
+            N = int(np.ceil(N)) if int(np.ceil(N)) % 2 == 1 else int(np.ceil(N)) + 1
+            H = np.zeros(N)
+            W = np.ones(N)
+
+            for I in range(N-1):
+                W[I] = 0.5 + 0.5 * np.cos((2 * np.pi * I) / N)
+                if I == 0:
+                    H[I] = 2 * NewCutOfFrequency1
+                else:
+                    H[I] = 2 * NewCutOfFrequency1 * np.sin(2 * np.pi * NewCutOfFrequency1 * I) / (2 * np.pi * NewCutOfFrequency1 * I)
+                H[I] *= W[I]
+
+            Coefficients = np.zeros(N)
+            for I in range(N):
+                Coefficients[I] = H[I]
+
+            with open("Case1.txt", "w") as File:
+                for I in range(-(N//2), (N//2)+1):
+                    Index = I
+                    Value = Coefficients[abs(I)]
+                    
+                    if abs(Value) < 1e-17:
+                        File.write(f"{Index}\t{Value:.5E}\n")
+                    else:
+                        File.write(f"{Index}\t{Value:.10f}\n")
+
+            return Coefficients
+        
+        elif StopAttenuation <= 53:
+            N = 3.3 / NewTransitionBand
+            N = int(np.ceil(N)) if int(np.ceil(N)) % 2 == 1 else int(np.ceil(N)) + 1
+            H = np.zeros(N)
+            W = np.ones(N)
+
+            for I in range(N-1):
+                W[I] = 0.54 + 0.46 * np.cos((2 * np.pi * I) / N)
+                if I == 0:
+                    H[I] = 2 * NewCutOfFrequency1
+                else:
+                    H[I] = 2 * NewCutOfFrequency1 * np.sin(2 * np.pi * NewCutOfFrequency1 * I) / (2 * np.pi * NewCutOfFrequency1 * I)
+                H[I] *= W[I]
+
+            Coefficients = np.zeros(N)
+            for I in range(N):
+                Coefficients[I] = H[I]
+
+            with open("Case1.txt", "w") as File:
+                File.write(f"0\n")
+                File.write(f"0\n")
+                File.write(f"{N}\n")
+                for I in range(-(N//2), (N//2)+1):
+                    Index = I
+                    Value = Coefficients[abs(I)]
+                    
+                    if abs(Value) < 1e-17:
+                        File.write(f"{Index} {Value:.5E}\n")
+                    else:
+                        File.write(f"{Index} {Value:.10f}\n")
+            print("Filter test case 1 done successfully")
+            return Coefficients
+        elif StopAttenuation <= 74:
+            N = 5.5 / NewTransitionBand
+            N = int(np.ceil(N)) if int(np.ceil(N)) % 2 == 1 else int(np.ceil(N)) + 1
+            H = np.zeros(N)
+            W = np.ones(N)
+
+            for I in range(N-1):
+                W[I] = 0.42 + 0.5 * np.cos((2 * np.pi * I) / N-1) + 0.08 * np.cos((4 * np.pi * I) / N-1)
+                if I == 0:
+                    H[I] = 2 * NewCutOfFrequency1
+                else:
+                    H[I] = 2 * NewCutOfFrequency1 * np.sin(2 * np.pi * NewCutOfFrequency1 * I) / (2 * np.pi * NewCutOfFrequency1 * I)
+                H[I] *= W[I]
+
+            Coefficients = np.zeros(N)
+            for I in range(N):
+                Coefficients[I] = H[I]
+
+            with open("Case3.txt", "w") as File:
+                File.write(f"0\n")
+                File.write(f"0\n")
+                File.write(f"{N}\n")
+                for I in range(-(N//2), (N//2)+1):
+                    Index = I
+                    Value = Coefficients[abs(I)]
+                    
+                    if abs(Value) < 1e-17:
+                        File.write(f"{Index} {Value:.5E}\n")
+                    else:
+                        File.write(f"{Index} {Value:.10f}\n")
+            print("Filter test case 1 done successfully")
+            return Coefficients
+    elif FilterType == 'Highpass':
+        NewCutOfFrequency1 = (CutOfFrequency1 - (TransitionBand / 2)) / SamplingFrequency
+        NewTransitionBand = TransitionBand / SamplingFrequency
+        if StopAttenuation <= 21:
+            N = 0.9 / NewTransitionBand
+            N = int(np.ceil(N)) if int(np.ceil(N)) % 2 == 1 else int(np.ceil(N)) + 1
+            H = np.zeros(N)
+            W = np.ones(N)
+
+            for I in range(N):  # Changed to loop over all indices
+                W[I] = 1
+                if I == 0:
+                    H[I] = 1 - (2 * NewCutOfFrequency1)
+                else:
+                    H[I] = -(2 * NewCutOfFrequency1 * np.sin(2 * np.pi * NewCutOfFrequency1 * I) / (2 * np.pi * NewCutOfFrequency1 * I))
+                H[I] *= W[I]
+
+            Coefficients = np.zeros(N)
+            for I in range(N):
+                Coefficients[I] = H[I]
+
+            with open("Case3.txt", "a") as File:  # Changed to append to the file
+                File.write(f"0\n")
+                File.write(f"0\n")
+                File.write(f"{N}\n")
+                for I in range(-(N//2), (N//2)+1):
+                    Index = I
+                    Value = Coefficients[abs(I)]
+                    
+                    if abs(Value) < 1e-17:
+                        File.write(f"{Index} {Value:.5E}\n")
+                    else:
+                        File.write(f"{Index} {Value:.8f}\n")
+            print("Filter test case 3 done successfully")
+            return Coefficients
+
+        elif StopAttenuation <= 44:
+            N = 3.1 / NewTransitionBand
+            N = int(np.ceil(N)) if int(np.ceil(N)) % 2 == 1 else int(np.ceil(N)) + 1
+            H = np.zeros(N)
+            W = np.ones(N)
+
+            for I in range(N):  # Changed to loop over all indices
+                W[I] = 0.5 + 0.5 * np.cos((2 * np.pi * I) / N)
+                if I == 0:
+                    H[I] = 1 - (2 * NewCutOfFrequency1)
+                else:
+                    H[I] = -(2 * NewCutOfFrequency1 * np.sin(2 * np.pi * NewCutOfFrequency1 * I) / (2 * np.pi * NewCutOfFrequency1 * I))
+                H[I] *= W[I]
+
+            Coefficients = np.zeros(N)
+            for I in range(N):
+                Coefficients[I] = H[I]
+
+            with open("Case3.txt", "a") as File:  # Changed to append to the file
+                for I in range(-(N//2), (N//2)+1):
+                    Index = I
+                    Value = Coefficients[abs(I)]
+                    
+                    if abs(Value) < 1e-17:
+                        File.write(f"{Index}\t{Value:.5E}\n")
+                    else:
+                        File.write(f"{Index}\t{Value:.10f}\n")
+            print("Filter test case 3 done successfully")
+            return Coefficients
+
+        elif StopAttenuation <= 53:
+            N = 3.3 / NewTransitionBand
+            N = int(np.ceil(N)) if int(np.ceil(N)) % 2 == 1 else int(np.ceil(N)) + 1
+            H = np.zeros(N)
+            W = np.ones(N)
+
+            for I in range(N):  # Changed to loop over all indices
+                W[I] = 0.54 + 0.46 * np.cos((2 * np.pi * I) / N)
+                if I == 0:
+                    H[I] = 1 - (2 * NewCutOfFrequency1)
+                else:
+                    H[I] = -(2 * NewCutOfFrequency1 * np.sin(2 * np.pi * NewCutOfFrequency1 * I) / (2 * np.pi * NewCutOfFrequency1 * I))
+                H[I] *= W[I]
+
+            Coefficients = np.zeros(N)
+            for I in range(N):
+                Coefficients[I] = H[I]
+
+            with open("Case3.txt", "a") as File:  # Changed to append to the file
+                File.write(f"0\n")
+                File.write(f"0\n")
+                File.write(f"{N}\n")
+                for I in range(-(N//2), (N//2)+1):
+                    Index = I
+                    Value = Coefficients[abs(I)]
+                    
+                    if abs(Value) < 1e-17:
+                        File.write(f"{Index} {Value:.5E}\n")
+                    else:
+                        File.write(f"{Index} {Value:.8f}\n")
+            print("Filter test case 3 done successfully")
+            return Coefficients
+
+        elif StopAttenuation <= 74:
+            N = 5.5 / NewTransitionBand
+            N = int(np.ceil(N)) if int(np.ceil(N)) % 2 == 1 else int(np.ceil(N)) + 1
+            H = np.zeros(N)
+            W = np.ones(N)
+
+            for I in range(N):  # Changed to loop over all indices
+                W[I] = 0.42 + 0.5 * np.cos((2 * np.pi * I) / (N-1)) + 0.08 * np.cos((4 * np.pi * I) / (N-1))
+                if I == 0:
+                    H[I] = (1 - (2 * NewCutOfFrequency1))
+                else:
+                    H[I] = (-2 * NewCutOfFrequency1 * (np.sin(2 * np.pi * NewCutOfFrequency1 * I) / (2 * np.pi * NewCutOfFrequency1 * I)))
+                H[I] *= W[I]
+
+            Coefficients = np.zeros(N)
+            for I in range(N):
+                Coefficients[I] = H[I]
+
+            with open("Case3.txt", "a") as File:  # Changed to append to the file
+                File.write(f"0\n")
+                File.write(f"0\n")
+                File.write(f"{N}\n")
+                for I in range(-(N//2), (N//2)+1):
+                    Index = I
+                    Value = Coefficients[abs(I)]
+                    
+                    if abs(Value) < 1e-4:
+                        File.write(f"{Index} {Value:.5E}\n")
+                    else:
+                        File.write(f"{Index} {Value:.10f}\n")
+            print("Filter test case 3 done successfully")
+            return Coefficients
+    elif FilterType == 'Bandpass':
+        NewCutOfFrequency1 = (CutOfFrequency1 - (TransitionBand / 2)) / SamplingFrequency
+        NewCutOfFrequency2 = (CutOfFrequency2 + (TransitionBand / 2)) / SamplingFrequency
+        NewTransitionBand = TransitionBand / SamplingFrequency
+        if StopAttenuation <= 21:
+            N = 0.9 / NewTransitionBand
+            N = int(np.ceil(N)) if int(np.ceil(N)) % 2 == 1 else int(np.ceil(N)) + 1
+            H = np.zeros(N)
+            W = np.ones(N)
+
+            for I in range(N):
+                W[I] = 1
+                if I == 0:
+                    H[I] = 2 * (NewCutOfFrequency2 - NewCutOfFrequency1)
+                else:
+                    H[I] = -(2 * NewCutOfFrequency1 * np.sin(2 * np.pi * NewCutOfFrequency1 * I) / (2 * np.pi * NewCutOfFrequency1 * I)) + \
+                        (2 * NewCutOfFrequency2 * np.sin(2 * np.pi * NewCutOfFrequency2 * I) / (2 * np.pi * NewCutOfFrequency2 * I))
+                H[I] *= W[I]
+
+            Coefficients = np.zeros(N)
+            for I in range(N):
+                Coefficients[I] = H[I]
+
+            with open("Case7.txt", "a") as File:
+                File.write(f"0\n")
+                File.write(f"0\n")
+                File.write(f"{N}\n")
+                for I in range(-(N-1)//2, (N-1)//2 + 1):
+                    native_index = I + N//2  # Adjust to get the native index
+                    Value = Coefficients[native_index]
+                    if abs(Value) < 1e-17:
+                        File.write(f"{I} {Value:.5E}\n")
+                    else:
+                        File.write(f"{I} {Value:.8f}\n")
+            print("Filter test case 7 done successfully")
+            return Coefficients
+
+        elif StopAttenuation <= 44:
+            N = 3.1 / NewTransitionBand
+            N = int(np.ceil(N)) if int(np.ceil(N)) % 2 == 1 else int(np.ceil(N)) + 1
+            H = np.zeros(N)
+            W = np.ones(N)
+
+            for I in range(N):
+                W[I] = 0.5 + 0.5 * np.cos((2 * np.pi * I) / (N-1))  # Adjusted window function
+                if I == 0:
+                    H[I] = 2 * (NewCutOfFrequency2 - NewCutOfFrequency1)
+                else:
+                    H[I] = -(2 * NewCutOfFrequency1 * np.sin(2 * np.pi * NewCutOfFrequency1 * I) / (2 * np.pi * NewCutOfFrequency1 * I)) + \
+                        (2 * NewCutOfFrequency2 * np.sin(2 * np.pi * NewCutOfFrequency2 * I) / (2 * np.pi * NewCutOfFrequency2 * I))
+                H[I] *= W[I]
+
+            Coefficients = np.zeros(N)
+            for I in range(N):
+                Coefficients[I] = H[I]
+
+            with open("Case7.txt", "a") as File:
+                for I in range(-(N-1)//2, (N-1)//2 + 1):
+                    native_index = I + N//2  # Adjust to get the native index
+                    Value = Coefficients[native_index]
+                    if abs(Value) < 1e-17:
+                        File.write(f"{I}\t{Value:.5E}\n")
+                    else:
+                        File.write(f"{I}\t{Value:.10f}\n")
+            print("Filter test case 5 done successfully")
+            return Coefficients
+
+        elif StopAttenuation <= 53:
+            N = 3.3 / NewTransitionBand
+            N = int(np.ceil(N)) if int(np.ceil(N)) % 2 == 1 else int(np.ceil(N)) + 1
+            H = np.zeros(N)
+            W = np.ones(N)
+
+            for I in range(N):
+                W[I] = 0.54 + 0.46 * np.cos((2 * np.pi * I) / (N-1))  # Adjusted window function
+                if I == 0:
+                    H[I] = 2 * (NewCutOfFrequency2 - NewCutOfFrequency1)
+                else:
+                    H[I] = -(2 * NewCutOfFrequency1 * np.sin(2 * np.pi * NewCutOfFrequency1 * I) / (2 * np.pi * NewCutOfFrequency1 * I)) + \
+                        (2 * NewCutOfFrequency2 * np.sin(2 * np.pi * NewCutOfFrequency2 * I) / (2 * np.pi * NewCutOfFrequency2 * I))
+                H[I] *= W[I]
+
+            Coefficients = np.zeros(N)
+            for I in range(N):
+                Coefficients[I] = H[I]
+
+            with open("Case5.txt", "a") as File:
+                File.write(f"0\n")
+                File.write(f"0\n")
+                File.write(f"{N}\n")
+                for I in range(-(N-1)//2, (N-1)//2 + 1):
+                    native_index = I + N//2  # Adjust to get the native index
+                    Value = Coefficients[native_index]
+                    if abs(Value) < 1e-17:
+                        File.write(f"{I} {Value:.5E}\n")
+                    else:
+                        File.write(f"{I} {Value:.8f}\n")
+            print("Filter test case 7 done successfully")
+            return Coefficients
+
+        elif StopAttenuation <= 74:
+            N = 5.5 / NewTransitionBand
+            N = int(np.ceil(N)) if int(np.ceil(N)) % 2 == 1 else int(np.ceil(N)) + 1
+            H = np.zeros(N)
+            W = np.ones(N)
+
+            for I in range(N):
+                W[I] = 0.42 + 0.5 * np.cos((2 * np.pi * I) / (N-1)) + 0.08 * np.cos((4 * np.pi * I) / (N-1))  # Adjusted window function
+                if I == 0:
+                    H[I] = 2 * (NewCutOfFrequency2 - NewCutOfFrequency1)
+                else:
+                    H[I] = (2 * NewCutOfFrequency2 * np.sin(2 * np.pi * NewCutOfFrequency2 * I) / (2 * np.pi * NewCutOfFrequency2 * I)) - (2 * NewCutOfFrequency1 * np.sin(2 * np.pi * NewCutOfFrequency1 * I) / (2 * np.pi * NewCutOfFrequency1 * I))
+                H[I] *= W[I]
+
+            Coefficients = np.zeros(N)
+            for I in range(N):
+                Coefficients[I] = H[I]
+
+            with open("Case7.txt", "a") as File:
+                File.write(f"0\n")
+                File.write(f"0\n")
+                File.write(f"{N}\n")
+                for I in range(-(N-1)//2, 0):
+                    Index = I
+                    Value = Coefficients[abs(I)]
+                    if abs(Value) < 1e-4:
+                        File.write(f"{I} {Value:.5E}\n")
+                    else:
+                        File.write(f"{I} {Value:.10f}\n")
+                for I in range(0, ((N-1)//2)+1 ):
+                    Index = I
+                    Value = Coefficients[abs(I)]
+                    if abs(Value) < 1e-4:
+                        File.write(f"{I} {Value:.5E}\n")
+                    else:
+                        File.write(f"{I} {Value:.10f}\n")
+            print("Filter test case 5 done successfully")
+            return Coefficients
+    elif FilterType == 'Bandstop':
+        NewCutOfFrequency1 = (CutOfFrequency1 + (TransitionBand / 2)) / SamplingFrequency
+        NewCutOfFrequency2 = (CutOfFrequency2 - (TransitionBand / 2)) / SamplingFrequency
+        NewTransitionBand = TransitionBand / SamplingFrequency
+        if StopAttenuation <= 21:
+            N = 0.9 / NewTransitionBand
+            N = int(np.ceil(N)) if int(np.ceil(N)) % 2 == 1 else int(np.ceil(N)) + 1
+            H = np.zeros(N)
+            W = np.ones(N)
+
+
+            for I in range(N):
+                W[I] = 1
+                if I == 0:
+                    H[I] = 1 - 2 * (NewCutOfFrequency2 - NewCutOfFrequency1)
+                else:
+                    H[I] = (2 * NewCutOfFrequency1 * np.sin(2 * np.pi * NewCutOfFrequency1 * I) / (2 * np.pi * NewCutOfFrequency1 * I)) - (2 * NewCutOfFrequency2 * np.sin(2 * np.pi * NewCutOfFrequency2 * I) / (2 * np.pi * NewCutOfFrequency2 * I))
+                H[I] *= W[I]
+
+            Coefficients = np.zeros(N)
+            for I in range(N):
+                Coefficients[I] = H[I]
+
+            with open("Case5.txt", "a") as File:
+                File.write(f"0\n")
+                File.write(f"0\n")
+                File.write(f"{N}\n")
+                for I in range(-(N-1)//2, (N-1)//2 + 1):
+                    native_index = I + N//2  # Adjust to get the native index
+                    Value = Coefficients[native_index]
+                    if abs(Value) < 1e-17:
+                        File.write(f"{I} {Value:.5E}\n")
+                    else:
+                        File.write(f"{I} {Value:.8f}\n")
+            print("Filter test case 7 done successfully")
+            return Coefficients
+
+        elif StopAttenuation <= 44:
+            N = 3.1 / NewTransitionBand
+            N = int(np.ceil(N)) if int(np.ceil(N)) % 2 == 1 else int(np.ceil(N)) + 1
+            H = np.zeros(N)
+            W = np.ones(N)
+
+            for I in range(N):
+                W[I] = 0.5 + 0.5 * np.cos((2 * np.pi * I) / (N-1))  # Adjusted window function
+                if I == 0:
+                    H[I] = 1 - 2 * (NewCutOfFrequency2 - NewCutOfFrequency1)
+                else:
+                    H[I] = (2 * NewCutOfFrequency1 * np.sin(2 * np.pi * NewCutOfFrequency1 * I) / (2 * np.pi * NewCutOfFrequency1 * I)) - (2 * NewCutOfFrequency2 * np.sin(2 * np.pi * NewCutOfFrequency2 * I) / (2 * np.pi * NewCutOfFrequency2 * I))
+                H[I] *= W[I]
+
+            Coefficients = np.zeros(N)
+            for I in range(N):
+                Coefficients[I] = H[I]
+
+            with open("Case7.txt", "a") as File:
+                for I in range(-(N-1)//2, (N-1)//2 + 1):
+                    native_index = I + N//2  # Adjust to get the native index
+                    Value = Coefficients[native_index]
+                    if abs(Value) < 1e-17:
+                        File.write(f"{I}\t{Value:.5E}\n")
+                    else:
+                        File.write(f"{I}\t{Value:.10f}\n")
+            print("Filter test case 7 done successfully")
+            return Coefficients
+
+        elif StopAttenuation <= 53:
+            N = 3.3 / NewTransitionBand
+            N = int(np.ceil(N)) if int(np.ceil(N)) % 2 == 1 else int(np.ceil(N)) + 1
+            H = np.zeros(N)
+            W = np.ones(N)
+
+            for I in range(N):
+                W[I] = 0.54 + 0.46 * np.cos((2 * np.pi * I) / (N-1))  # Adjusted window function
+                if I == 0:
+                    H[I] = 1 - 2 * (NewCutOfFrequency2 - NewCutOfFrequency1)
+                else:
+                    H[I] = -(2 * NewCutOfFrequency1 * np.sin(2 * np.pi * NewCutOfFrequency1 * I) / (2 * np.pi * NewCutOfFrequency1 * I)) + \
+                        (2 * NewCutOfFrequency2 * np.sin(2 * np.pi * NewCutOfFrequency2 * I) / (2 * np.pi * NewCutOfFrequency2 * I))
+                H[I] *= W[I]
+
+            Coefficients = np.zeros(N)
+            for I in range(N):
+                Coefficients[I] = H[I]
+
+            with open("Case7.txt", "a") as File:
+                File.write(f"0\n")
+                File.write(f"0\n")
+                File.write(f"{N}\n")
+                for I in range(-(N-1)//2, (N-1)//2 + 1):
+                    native_index = I + N//2  # Adjust to get the native index
+                    Value = Coefficients[native_index]
+                    if abs(Value) < 1e-17:
+                        File.write(f"{I} {Value:.5E}\n")
+                    else:
+                        File.write(f"{I} {Value:.8f}\n")
+            print("Filter test case 7 done successfully")
+            return Coefficients
+
+        elif StopAttenuation <= 74:
+            N = 5.5 / NewTransitionBand
+            N = int(np.ceil(N)) if int(np.ceil(N)) % 2 == 1 else int(np.ceil(N)) + 1
+            H = np.zeros(N)
+            W = np.ones(N)
+
+            for I in range(N):
+                W[I] = 0.42 + 0.5 * np.cos((2 * np.pi * I) / (N-1)) + 0.08 * np.cos((4 * np.pi * I) / (N-1))  # Adjusted window function
+                if I == 0:
+                    H[I] = 1 - 2 * (NewCutOfFrequency2 - NewCutOfFrequency1)
+                else:
+                    H[I] = (2 * NewCutOfFrequency1 * np.sin(2 * np.pi * NewCutOfFrequency1 * I) / (2 * np.pi * NewCutOfFrequency1 * I)) - (2 * NewCutOfFrequency2 * np.sin(2 * np.pi * NewCutOfFrequency2 * I) / (2 * np.pi * NewCutOfFrequency2 * I))
+                H[I] *= W[I]
+
+            Coefficients = np.zeros(N)
+            for I in range(N):
+                Coefficients[I] = H[I]
+
+            with open("Case7.txt", "a") as File:
+                File.write(f"0\n")
+                File.write(f"0\n")
+                File.write(f"{N}\n")
+                for I in range(-(N-1)//2, 0):
+                    Index = I
+                    Value = Coefficients[abs(I)]
+                    if abs(Value) < 1e-4:
+                        File.write(f"{I} {Value:.5E}\n")
+                    else:
+                        File.write(f"{I} {Value:.10f}\n")
+                for I in range(0, ((N-1)//2)+1 ):
+                    Index = I
+                    Value = Coefficients[abs(I)]
+                    if abs(Value) < 1e-4:
+                        File.write(f"{I} {Value:.5E}\n")
+                    else:
+                        File.write(f"{I} {Value:.10f}\n")
+            print("Filter test case 7 done successfully")
+            return Coefficients
+
+    return np.array([])
+
+
+def ConvolveForFilter(x, h, min_index):
+    # Perform manual convolution
+    
+    # Ensure n_min and n_max are integers
+    n_min = min(range(len(x))) + min(range(len(h)))
+    n_max = max(range(len(x))) + max(range(len(h)))
+
+    y = []
+    for n in range(n_min, n_max + 1):
+        sum_val = 0
+        for k in range(len(x)):
+            if 0 <= n - k < len(h):  # Ensure indices are within bounds of h
+                sum_val += x[k] * h[n - k]
+        
+        result_index =  min_index + n  # Adjust result index relative to min_index
+        y.append((int(result_index), round(sum_val, 10)))  # Index as integer, value rounded to 10 decimal places
+    
+    return y
+
+def FilterSignal(input1,input2,output):
+    file1 = input1.get()
+    file2 = input2.get()
+    outputFile = output.get()  
+        # Read the first three rows as comments
+    with open(file1, "r") as f:
+        first_three_rows_file1 = [next(f).strip() for _ in range(3)]
+
+    with open(file2, "r") as f:
+        first_three_rows_file2 = [next(f).strip() for _ in range(3)]
+
+    # Load signals (skip the first 3 rows and extract values only)
+    data1 = np.loadtxt(file1, skiprows=3)
+    data2 = np.loadtxt(file2, skiprows=3)
+    
+    # Extract indices and signal values (assuming two columns: index and value)
+    indices1 = data1[:, 0]  # Extract indices from first column
+    signal1Values = data1[:, 1]  # Extract signal values from second column
+    
+    indices2 = data2[:, 0]  # Extract indices from first column
+    signal2Values = data2[:, 1]  # Extract signal values from second column
+    
+    # Get minimum index from both files
+    minIndex = GetMinIndex(file1, file2)
+    
+    # Perform the convolution
+    convolvedSignal = ConvolveForFilter(signal1Values, signal2Values, minIndex)
+    
+    # Get the length of the convolved signal
+    outputLength = len(convolvedSignal)
+
+    # Save the result to the output file
+    with open(outputFile, "w") as f:
+        # Write the first 3 rows, which contain only one value per row (from the input files)
+        f.write(f"0\n")
+        f.write(f"0\n")
+        f.write(f"{outputLength}\n")
+        
+        # Write the convolved signal (index-value pairs)
+        for index, value in convolvedSignal:
+            f.write(f"{index} {value:.10f}\n")
+    
+    messagebox.showinfo("Successful", "Filter done successfully!")
 
 
 
 
+    
+    
+
+    
 
