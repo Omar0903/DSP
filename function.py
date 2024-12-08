@@ -916,7 +916,6 @@ def CompareTask4():
         indexfile1 = []
         samplesfile2 = []
         indexfile2 = []
-
         # Read first file
         with open(file1, "r") as f:
             for _ in range(3):
@@ -2161,9 +2160,6 @@ def DesignFIRFilter(SamplingFrequency, CutOfFrequency1, CutOfFrequency2,StopAtte
 
 
 def ConvolveForFilter(x, h, min_index):
-    # Perform manual convolution
-    
-    # Ensure n_min and n_max are integers
     n_min = min(range(len(x))) + min(range(len(h)))
     n_max = max(range(len(x))) + max(range(len(h)))
 
@@ -2171,56 +2167,41 @@ def ConvolveForFilter(x, h, min_index):
     for n in range(n_min, n_max + 1):
         sum_val = 0
         for k in range(len(x)):
-            if 0 <= n - k < len(h):  # Ensure indices are within bounds of h
+            if 0 <= n - k < len(h): 
                 sum_val += x[k] * h[n - k]
         
-        result_index =  min_index + n  # Adjust result index relative to min_index
-        y.append((int(result_index), round(sum_val, 10)))  # Index as integer, value rounded to 10 decimal places
-    
+        result_index =  min_index + n 
+        y.append((int(result_index), round(sum_val, 10)))  
     return y
 
 def FilterSignal(input1,input2,output):
     file1 = input1.get()
     file2 = input2.get()
     outputFile = output.get()  
-        # Read the first three rows as comments
     with open(file1, "r") as f:
         first_three_rows_file1 = [next(f).strip() for _ in range(3)]
 
     with open(file2, "r") as f:
         first_three_rows_file2 = [next(f).strip() for _ in range(3)]
 
-    # Load signals (skip the first 3 rows and extract values only)
     data1 = np.loadtxt(file1, skiprows=3)
     data2 = np.loadtxt(file2, skiprows=3)
-    
-    # Extract indices and signal values (assuming two columns: index and value)
-    indices1 = data1[:, 0]  # Extract indices from first column
-    signal1Values = data1[:, 1]  # Extract signal values from second column
-    
-    indices2 = data2[:, 0]  # Extract indices from first column
-    signal2Values = data2[:, 1]  # Extract signal values from second column
-    
-    # Get minimum index from both files
+    indices1 = data1[:, 0]
+    signal1Values = data1[:, 1] 
+    indices2 = data2[:, 0] 
+    signal2Values = data2[:, 1]  
     minIndex = GetMinIndex(file1, file2)
     
-    # Perform the convolution
     convolvedSignal = ConvolveForFilter(signal1Values, signal2Values, minIndex)
     
-    # Get the length of the convolved signal
     outputLength = len(convolvedSignal)
 
-    # Save the result to the output file
     with open(outputFile, "w") as f:
-        # Write the first 3 rows, which contain only one value per row (from the input files)
         f.write(f"0\n")
         f.write(f"0\n")
         f.write(f"{outputLength}\n")
-        
-        # Write the convolved signal (index-value pairs)
         for index, value in convolvedSignal:
             f.write(f"{index} {value:.10f}\n")
-    
     messagebox.showinfo("Successful", "Filter done successfully!")
 
 

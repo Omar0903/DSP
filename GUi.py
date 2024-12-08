@@ -37,6 +37,7 @@ class App:
             self.CreatePageSeven()
         elif self.page == 8:
             self.CreatePageEight()
+
             
 
 
@@ -272,7 +273,7 @@ class App:
 
         proccessType = ttk.Combobox(values=["Shifting", "Folding", "Shifting & Folding"])
         proccessType.place(x=625, y=280)
-        proccessType.set("Shifting")  # Default to Shifting
+        proccessType.set("Shifting")  
 
         shiftingValue = Entry(width=10)
         shiftingValue.place(x=670, y=310)
@@ -317,7 +318,7 @@ class App:
         entre4.place(x=250, y=250)
         proccessType = ttk.Combobox(values=["Convolution","Smoothing","Correlation","Remove the DC"],width=15,height=20)
         proccessType.place(x=330, y=212)
-        proccessType.set("Convolution")  # Default to Convolution
+        proccessType.set("Convolution")  
         test = Button(text=" Test", width=25, height=2, background="white",command=lambda:GeneralCompare(proccessType))
         test.place(x=1000, y=500)
         applyProccess = Button(text=" Apply process", width=25, height=2, background="white",command=lambda: ProcessConvolution(entreFile1, entreFile2,entreFile3 ,proccessType,entre4))
@@ -326,7 +327,6 @@ class App:
         label = Label(text="Task 8", font=25, bg='white', width=50, justify="center")
         label.place(x=400, y=20)
 
-        # Label and entry for File 1
         label2 = Label(text="Input File 1:", font=10, bg='white', justify="center")
         label2.place(x=100, y=90)
         entryFile1 = Entry(fg='black', bg='white', font=15, justify="center", width=50)
@@ -335,50 +335,43 @@ class App:
         label3.place(x=100, y=130)
         entryFile2 = Entry(fg='black', bg='white', font=15, justify="center", width=50)
         entryFile2.place(x=250, y=130)
-        # Label and entry for Output File
         label4 = Label(text="Output File:", font=10, bg='white', justify="center")
         label4.place(x=100, y=170)
         entryFile3 = Entry(fg='black', bg='white', font=15, justify="center", width=50)
         entryFile3.place(x=250, y=170)
 
-        # Filter type selection
         label5 = Label(text="Select type of filter:", font=20, bg='white', justify="center")
         label5.place(x=100, y=210)
         processType = ttk.Combobox(values=["Lowpass", "Highpass", "Bandpass", "Bandstop"], width=15, height=20)
         processType.place(x=330, y=212)
-        processType.set("Lowpass")  # Default to Lowpass
+        processType.set("Lowpass")  
 
-        # Sampling frequency
         label6 = Label(text="Sampling frequency", font=10, bg='white', justify="center")
         label6.place(x=100, y=250)
         entry4 = Entry(fg='black', bg='white', font=15, justify="center", width=10)
         entry4.place(x=300, y=250)
         
-        # Cut off frequency 1
         label7 = Label(text="Cut off frequency 1", font=10, bg='white', justify="center")
         label7.place(x=100, y=290)
         entry5 = Entry(fg='black', bg='white', font=15, justify="center", width=10)
         entry5.place(x=300, y=290)
         
-        # Cut off frequency 2
         label8 = Label(text="Cut off frequency 2", font=10, bg='white', justify="center")
         label8.place(x=100, y=330)
         entry6 = Entry(fg='black', bg='white', font=15, justify="center", width=10)
         entry6.place(x=300, y=330)
         
-        # Stop attenuation
+
         label9 = Label(text="Stop attenuation", font=10, bg='white', justify="center")
         label9.place(x=100, y=370)
         entry7 = Entry(fg='black', bg='white', font=15, justify="center", width=10)
         entry7.place(x=300, y=370)
         
-        # Transition band
         label10 = Label(text="Transition band ", font=10, bg='white', justify="center")
         label10.place(x=100, y=410)
         entry8 = Entry(fg='black', bg='white', font=15, justify="center", width=10)
         entry8.place(x=300, y=410)
 
-        # Load and Save buttons for file selection
         buttonFile1 = Button(text="Load file1", command=lambda: SelectFile1(entryFile1), background='white', width=15, height=1, justify="center")
         buttonFile1.place(x=850, y=90)
         buttonFile2 = Button(text="Load file2", command=lambda: SelectFile1(entryFile2), background='white', width=15, height=1, justify="center")
@@ -386,14 +379,27 @@ class App:
         buttonFile3 = Button(text="Save As", command=lambda: SelectFile2(entryFile3), background='white', width=15, height=1, justify="center")
         buttonFile3.place(x=850, y=170)
 
-        # Apply process button (FIR Filter Processing)
-        applyProcess = Button(text=" Apply Coefficients ",width=25,height=2, background="white", command=lambda: DesignFIRFilter(entry4,entry5,entry6, entry7,entry8,processType))
-        applyProcess.place(x=800, y=500)
-        test = Button(text=" Test", width=25, height=2, background="white",command=lambda:GeneralCompare(processType))
-        test.place(x=1000, y=500)
-        applyFilter = Button(text=" Apply filter", width=25, height=2, background="white",command=lambda:FilterSignal(entryFile1,entryFile2,entryFile3))
-        applyFilter.place(x=600, y=500)
-
+        applyProcess = Button(text=" Apply Coefficients ",width=20,height=2, background="white", command=lambda: DesignFIRFilter(entry4,entry5,entry6, entry7,entry8,processType))
+        applyProcess.place(x=920, y=550)
+        test = Button(text=" Test", width=20, height=2, background="white",command=lambda:GeneralCompare(processType))
+        test.place(x=1100, y=550)
+        applyFilter = Button(text=" Apply filter", width=20, height=2, background="white",command=lambda:FilterSignal(entryFile1,entryFile2,entryFile3))
+        applyFilter.place(x=740, y=550)
+        applyResampling = Button(text=" Apply resampling", width=20, height=2, background="white",command=lambda:FilterSignal(entryFile1,entryFile2,entryFile3))
+        applyResampling.place(x=560, y=550)        
+        
+        
+        label11 = Label(text="Entre M:", font=10, bg='white', justify="center",width=9)
+        label11.place(x=100, y=450)
+        entryFile10 = Entry(fg='black', bg='white', font=15, justify="center", width=10)
+        entryFile10.place(x=300, y=450)
+        label12 = Label(text="Entre L:", font=10, bg='white', justify="center",width=9)
+        label12.place(x=100, y=490)
+        entryFile11 = Entry(fg='black', bg='white', font=15, justify="center", width=10)
+        entryFile11.place(x=300, y=490)          
+        
+        
+        
 
 
 
