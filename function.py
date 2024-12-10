@@ -1735,7 +1735,7 @@ def DesignFIRFilter(SamplingFrequency, CutOfFrequency1, CutOfFrequency2,StopAtte
             for I in range(N):
                 Coefficients[I] = H[I]
 
-            with open("Case3.txt", "w") as File:
+            with open("Case1.txt", "w") as File:
                 File.write(f"0\n")
                 File.write(f"0\n")
                 File.write(f"{N}\n")
@@ -1903,7 +1903,7 @@ def DesignFIRFilter(SamplingFrequency, CutOfFrequency1, CutOfFrequency2,StopAtte
             for I in range(N):
                 Coefficients[I] = H[I]
 
-            with open("Case7.txt", "a") as File:
+            with open("Case5.txt", "a") as File:
                 File.write(f"0\n")
                 File.write(f"0\n")
                 File.write(f"{N}\n")
@@ -1936,7 +1936,7 @@ def DesignFIRFilter(SamplingFrequency, CutOfFrequency1, CutOfFrequency2,StopAtte
             for I in range(N):
                 Coefficients[I] = H[I]
 
-            with open("Case7.txt", "a") as File:
+            with open("Case5.txt", "a") as File:
                 for I in range(-(N-1)//2, (N-1)//2 + 1):
                     native_index = I + N//2  # Adjust to get the native index
                     Value = Coefficients[native_index]
@@ -1998,7 +1998,7 @@ def DesignFIRFilter(SamplingFrequency, CutOfFrequency1, CutOfFrequency2,StopAtte
             for I in range(N):
                 Coefficients[I] = H[I]
 
-            with open("Case7.txt", "a") as File:
+            with open("Case5.txt", "a") as File:
                 File.write(f"0\n")
                 File.write(f"0\n")
                 File.write(f"{N}\n")
@@ -2041,7 +2041,7 @@ def DesignFIRFilter(SamplingFrequency, CutOfFrequency1, CutOfFrequency2,StopAtte
             for I in range(N):
                 Coefficients[I] = H[I]
 
-            with open("Case5.txt", "a") as File:
+            with open("Case7.txt", "a") as File:
                 File.write(f"0\n")
                 File.write(f"0\n")
                 File.write(f"{N}\n")
@@ -2203,6 +2203,162 @@ def FilterSignal(input1,input2,output):
         for index, value in convolvedSignal:
             f.write(f"{index} {value:.10f}\n")
     messagebox.showinfo("Successful", "Filter done successfully!")
+
+def FilterSignalForResampling():
+    file1 =  filedialog.askopenfilename(title="Select the first file")
+    file2 =  filedialog.askopenfilename(title="Select the first file")
+    outputFile =  filedialog.askopenfilename(title="Select the first file")
+    with open(file1, "r") as f:
+        first_three_rows_file1 = [next(f).strip() for _ in range(3)]
+
+    with open(file2, "r") as f:
+        first_three_rows_file2 = [next(f).strip() for _ in range(3)]
+
+    data1 = np.loadtxt(file1, skiprows=3)
+    data2 = np.loadtxt(file2, skiprows=3)
+    indices1 = data1[:, 0]
+    signal1Values = data1[:, 1] 
+    indices2 = data2[:, 0] 
+    signal2Values = data2[:, 1]  
+    minIndex = GetMinIndex(file1, file2)
+    
+    convolvedSignal = ConvolveForFilter(signal1Values, signal2Values, minIndex)
+    
+    outputLength = len(convolvedSignal)
+
+    with open(outputFile, "w") as f:
+        f.write(f"0\n")
+        f.write(f"0\n")
+        f.write(f"{outputLength}\n")
+        for index, value in convolvedSignal:
+            f.write(f"{index} {value:.10f}\n")
+    indices = [item[0] for item in convolvedSignal]
+    values = [item[1] for item in convolvedSignal]
+
+    return indices, values
+def readFile():
+    filePath = filedialog.askopenfilename()
+    if filePath:
+        try:
+            with open(filePath, 'r') as file:
+                content = file.readlines()
+                global data
+                data = [list(map(float, line.strip().split())) for line in content[3:]]
+                if len(data) == 0:
+                    raise ValueError("No data found in the file after the first three rows.")
+                data = np.array(data)
+                global time, waveValues
+                time = data[:, 0]
+                waveValues = data[:, 1]
+        except Exception as e:
+            messagebox.showerror("Error", f"Could not read file: {e}")
+
+def resamplingSignal(UpsampleFactor, DownsampleFactor):
+
+    if float(UpsampleFactor.get()) == 0 and float(DownsampleFactor.get()) != 0:
+        readFile()
+        upSampled = []
+        newIndex = 0
+        with open("upsampledOutput.txt", "w") as file:
+            file.write("0\n")
+            file.write("0\n")
+            file.write("0\n")
+            for i in range(len(data)):
+                upSampled.append((newIndex, waveValues[i]))
+                file.write(f"{newIndex}\t{waveValues[i]}\n")
+                newIndex += 1
+                if i != (len(data) - 1):
+                    for j in range(int(DownsampleFactor.get()) - 1):
+                        upSampled.append((newIndex, 0))
+                        file.write(f"{newIndex}\t0\n")
+                        newIndex += 1
+
+        totalLength = len(upSampled)
+        with open("upsampledOutput.txt", "r+") as file:
+            lines = file.readlines()
+            lines[2] = f"{totalLength}\n"
+            file.seek(0)
+            file.writelines(lines)
+        FilterSignalForResampling()
+        messagebox.showinfo("Successful"," Down sampleing doen successfully")
+        
+
+    elif float(UpsampleFactor.get()) != 0 and float(DownsampleFactor.get()) == 0:
+        FilterSignalForResampling()
+        
+        readFile()
+        downSampled = []
+        newIndex = -26
+        with open("downsampledOutput.txt", "w") as file:
+            file.write("0\n")
+            file.write("0\n")
+            file.write("0\n")
+            for i in range(len(data)):
+                if (i % int(UpsampleFactor.get())) == 0:
+                    downSampled.append((newIndex, waveValues[i]))
+                    file.write(f"{newIndex}\t{waveValues[i]}\n")
+                    newIndex += 1
+        totalLength = len(downSampled)
+        with open("downsampledOutput.txt", "r+") as file:
+            lines = file.readlines()
+            lines[2] = f"{totalLength}\n"
+            file.seek(0)
+            file.writelines(lines)
+
+        messagebox.showinfo("Successful"," Down sampleing doen successfully")
+    elif float(UpsampleFactor.get()) != 0 and float(DownsampleFactor.get()) != 0:
+        readFile()
+        upSampled = []
+        newIndex = 0
+
+        with open("upsampledOutput.txt", "w") as file:
+            file.write("0\n")
+            file.write("0\n")
+            file.write("0\n")
+            for i in range(len(data)):
+                upSampled.append((newIndex, waveValues[i]))
+                file.write(f"{newIndex}\t{waveValues[i]}\n")
+                newIndex += 1
+                if i != (len(data) - 1):
+                    for j in range(int(DownsampleFactor.get()) - 1):
+                        upSampled.append((newIndex, 0))
+                        file.write(f"{newIndex}\t0\n")
+                        newIndex += 1
+
+        totalLength = len(upSampled)
+        with open("upsampledOutput.txt", "r+") as file:
+            lines = file.readlines()
+            lines[2] = f"{totalLength}\n"
+            file.seek(0)
+            file.writelines(lines)
+        indices, values = FilterSignalForResampling()
+        downSampled = []
+        newIndex = -26
+
+        with open("UP_downsampledOutput.txt", "w") as file:
+            file.write("0\n")
+            file.write("0\n")
+            file.write("0\n")
+            for i in range(len(values)):
+                if (i % int(UpsampleFactor.get())) == 0:
+                    downSampled.append((newIndex, values[i]))
+                    file.write(f"{newIndex}\t{values[i]}\n")
+                    newIndex += 1
+
+        totalLength = len(downSampled)
+        with open("UP_downsampledOutput.txt", "r+") as file:
+            lines = file.readlines()
+            lines[2] = f"{totalLength}\n"
+            file.seek(0)
+            file.writelines(lines)
+
+        messagebox.showinfo("Successful","UP & Down sampleing doen successfully")
+
+    else:
+        messagebox.showerror("Error","L factor and M factor can't be both zeros")
+
+
+        
 
 
 

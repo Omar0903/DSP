@@ -37,6 +37,8 @@ class App:
             self.CreatePageSeven()
         elif self.page == 8:
             self.CreatePageEight()
+        elif self.page == 9:
+            self.CreatePageNine()
 
             
 
@@ -385,26 +387,32 @@ class App:
         test.place(x=1100, y=550)
         applyFilter = Button(text=" Apply filter", width=20, height=2, background="white",command=lambda:FilterSignal(entryFile1,entryFile2,entryFile3))
         applyFilter.place(x=740, y=550)
-        applyResampling = Button(text=" Apply resampling", width=20, height=2, background="white",command=lambda:FilterSignal(entryFile1,entryFile2,entryFile3))
-        applyResampling.place(x=560, y=550)        
-        
-        
-        label11 = Label(text="Entre M:", font=10, bg='white', justify="center",width=9)
-        label11.place(x=100, y=450)
+    def CreatePageNine(self):
+        label = Label(text="Task 9", font=25, bg='white', width=50, justify="center")
+        label.place(x=400, y=20)
+        test = Button(text=" Test", width=20, height=2, background="white",command=lambda:GeneralCompare(processType))
+        test.place(x=1000, y=550)
+        processType = ttk.Combobox(values=["Down sampling test", "UP sampling test", "UP & Down sampling test"], width=25, height=20)
+        processType.place(x=590, y=290)
+        processType.set("Down sampling test") 
+        applyResampling = Button(text=" Apply resampling", width=20, height=2, background="white",command=lambda:resamplingSignal(entryFile10,entryFile11))
+        applyResampling.place(x=800, y=550)        
+        label11 = Label(text="Entre M factor:", font=10, bg='white', justify="center",width=20)
+        label11.place(x=560, y=130)
         entryFile10 = Entry(fg='black', bg='white', font=15, justify="center", width=10)
-        entryFile10.place(x=300, y=450)
-        label12 = Label(text="Entre L:", font=10, bg='white', justify="center",width=9)
-        label12.place(x=100, y=490)
+        entryFile10.place(x=620, y=170)
+        label12 = Label(text="Entre L factor:", font=10, bg='white', justify="center",width=20)
+        label12.place(x=560, y=210)
         entryFile11 = Entry(fg='black', bg='white', font=15, justify="center", width=10)
-        entryFile11.place(x=300, y=490)          
+        entryFile11.place(x=620, y=250)        
         
-        
+
         
 
 
 
     def next(self):
-        if self.page < 8:  
+        if self.page < 9:  
             self.page += 1
             self.create_page()
 
